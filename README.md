@@ -1,7 +1,7 @@
 # TP-Advanced-Zombies
 An advanced FiveM zombies script which provides you many features in purpose to enjoy and create a realistic zombie apocalypse server.
 
-# Most Common Questions Asked:
+## Most Common Questions Asked:
 
 Q: Why not despawning the zombies after looting and zombies are getting despawned on killing?
 
