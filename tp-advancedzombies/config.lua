@@ -102,19 +102,6 @@ Config.Zombies = {
 
     HumanEatingAndAttackingAnimation = true,
 
-    AllowInfection = true,
-    InfectionData = {
-
-        Chance = 30,
-
-        ApplyPedDamagePack = {
-            'BigHitByVehicle',
-            'SCR_Dumpster',
-            'SCR_Torture',
-        },
-
-    },
-
     DropLoot = true,
 
     Loot = {
