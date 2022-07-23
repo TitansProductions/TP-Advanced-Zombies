@@ -82,12 +82,6 @@ Config.ZombiePedModelWalks = {
 	"move_lester_CaneUp",
 }
 
-Config.InfectionTypes = { 
-    'RIGHT_LEFT', 'LEFT_LEG', 
-    'RIGHT_ARM',  'LEFT_ARM', 
-    'NECK'
-}
-
 Config.MuteAmbience      = true
 Config.NotHealthRecharge = true
 
