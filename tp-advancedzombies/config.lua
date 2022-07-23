@@ -89,7 +89,7 @@ Config.NotHealthRecharge = true
 Config.Zombies = {
     SpawnDelay        = 1000,     -- The time is in milliseconds, 1000 = 1 second.
 
-    SpawnZombie       = 5,
+    SpawnZombie       = 20,
     MinSpawnDistance  = 30,
     MaxSpawnDistance  = 45,
     DespawnDistance   = 50,
