@@ -1,3 +1,6 @@
+
+if Config.DisableTrafficAdjuster then
+
 SetRandomEventFlag(false)
 
 -- Supposedly disables all vehicles 
@@ -71,3 +74,4 @@ CreateThread(function()
   DistantCopCarSirens(false)
   DisableVehicleDistantlights(true) -- fixes distant ghost cars from appearing
 end)
+end
