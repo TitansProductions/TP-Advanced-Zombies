@@ -6,39 +6,10 @@ ESX, QBCore            = nil, nil
 zombiesList            = {}
 players, entitys       = {}, {}
 
-local loadedPlayerData = false
+local loadedPlayerData = true
 local isDead           = false
 
 local playerIsInSafezone = false
-
-if Config.Framework == "ESX" then
-
-    Citizen.CreateThread(function()
-        while ESX == nil do
-            TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-            Citizen.Wait(30)
-        end
-
-        Citizen.Wait(2000)
-        loadedPlayerData = true
-    end)
-
-end
-
-if Config.Framework == "QBCore" then
-
-    Citizen.CreateThread(function()
-        while QBCore == nil do
-            QBCore = exports['qb-core']:GetCoreObject()
-            Citizen.Wait(30)
-        end
-
-        Citizen.Wait(2000)
-        loadedPlayerData = true
-    end)
-
-end
-
 
 TriggerServerEvent("tp-advancedzombies:onZombieSpawningStart")
 TriggerServerEvent("tp-advancedzombies:onNewPlayerId", PlayerId())
