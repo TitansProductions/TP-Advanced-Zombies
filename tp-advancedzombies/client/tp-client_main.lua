@@ -29,7 +29,7 @@ if Config.Framework == "QBCore" then
 
     Citizen.CreateThread(function()
         while QBCore == nil do
-            TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
+            QBCore = exports['qb-core']:GetCoreObject()
             Citizen.Wait(30)
         end
 
