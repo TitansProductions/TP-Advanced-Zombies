@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'Nosmakos'
 description 'Titans Productions Advanced Zombies System (Supporting ESX & QBCore)'
-version '1.0.0'
+version '1.1.0'
 
 shared_scripts {
     'config.lua',
