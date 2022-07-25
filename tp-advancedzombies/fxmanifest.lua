@@ -3,7 +3,9 @@ game 'gta5'
 
 author 'Nosmakos'
 description 'Titans Productions Advanced Zombies System (Supporting ESX & QBCore)'
-version '1.1.1'
+version '1.2.0'
+
+ui_page 'html/index.html'
 
 shared_scripts {
     'config.lua',
@@ -17,4 +19,10 @@ server_scripts {
 
 client_scripts {
     'client/*.lua',
+}
+
+files {
+    'html/index.html',
+    'html/sounds/*.ogg',
+    'html/sounds/*.mp3'
 }
