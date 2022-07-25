@@ -97,7 +97,7 @@ if Config.Zombies.PlayCustomSpeakingSounds then
             volume = Config.Zombies.SpeakingSounds.Volume 
         end
 
-        if sounds ~= nil then
+        if sounds ~= nil and next(sounds) ~= nil then
             SendNUIMessage({ 
                 Sound = sounds[ math.random( #sounds ) ], 
                 Volume = volume
