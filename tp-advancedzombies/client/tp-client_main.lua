@@ -44,6 +44,72 @@ AddEventHandler("tp-advancedzombies:onPlayerUpdate", function(mPlayers)
 	players = mPlayers
 end)
 
+if Config.Zombies.PlayCustomSpeakingSounds then
+    Citizen.CreateThread(function()
+        while true do
+            Citizen.Wait(3000)
+
+            StartPlayingZombieSpeakingSounds()
+        end
+    end)
+
+    StartPlayingZombieSpeakingSounds = function()
+
+        for i, v in pairs(entitys) do
+            for j, player in pairs(players) do
+                local playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(player), true))
+                local distance = GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(player)), GetEntityCoords(v.entity), true)
+  
+                -- Playing zombie sounds when close to the player.
+                if distance <= 30.1 then
+                    TriggerServerEvent('tp-advancedzombies:SyncSpeakingSoundsOnServer', GetEntityCoords(v.entity))
+                end
+
+            end
+
+        end
+    end
+
+    RegisterNetEvent('tp-advancedzombies:SyncSpeakingSoundsOnClient')
+    AddEventHandler('tp-advancedzombies:SyncSpeakingSoundsOnClient', function(playerNetId, entityCoords)
+
+        local lCoords = entityCoords
+        local eCoords = GetEntityCoords(PlayerPedId())
+        local distIs  = Vdist(lCoords.x, lCoords.y, lCoords.z, eCoords.x, eCoords.y, eCoords.z)
+    
+        local number = distIs / 0.0
+        local volume = Config.Zombies.SpeakingSounds.Volume 
+        local sounds = {}
+
+        if (distIs >= 10.1 and distIs <= 30.01) then
+            number = distIs / 30.0
+            sounds = Config.Zombies.SpeakingSounds.DistanceSounds.far
+
+        elseif (distIs <= 10.0) then
+            number = distIs / 10.0 
+            sounds = Config.Zombies.SpeakingSounds.DistanceSounds.close
+        end
+
+        Wait(500)
+        volume = round(1-number, 2)
+
+        if volume >= Config.Zombies.SpeakingSounds.Volume then
+            volume = Config.Zombies.SpeakingSounds.Volume 
+        end
+
+        print(volume)
+
+        if sounds ~= nil then
+            SendNUIMessage({ 
+                Sound = sounds[ math.random( #sounds ) ], 
+                Volume = volume
+            })
+        end
+        
+    end)
+
+end
+
 if Config.Zombies.HumanEatingAndAttackingAnimation then
     local animationSleepTime = 2000
 
