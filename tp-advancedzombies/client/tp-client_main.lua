@@ -71,7 +71,7 @@ if Config.Zombies.PlayCustomSpeakingSounds then
     end
 
     RegisterNetEvent('tp-advancedzombies:SyncSpeakingSoundsOnClient')
-    AddEventHandler('tp-advancedzombies:SyncSpeakingSoundsOnClient', function(playerNetId, entityCoords)
+    AddEventHandler('tp-advancedzombies:SyncSpeakingSoundsOnClient', function(entityCoords)
 
         local lCoords = entityCoords
         local eCoords = GetEntityCoords(PlayerPedId())
