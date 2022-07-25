@@ -97,6 +97,28 @@ Config.Zombies = {
     MaxSpawnDistance  = 45,
     DespawnDistance   = 50,
 
+    PlayCustomSpeakingSounds = true,
+
+    SpeakingSounds = {
+        Volume = 0.3,
+
+        DistanceSounds = {
+
+            far = { 
+                'zombie_growl_1.mp3', 
+                'zombie_growl_2.mp3', 
+            },
+
+            close  = { 
+                'zombie_aggressive_1.mp3', 
+                'zombie_aggressive_2.mp3', 
+                'zombie_aggressive_3.mp3', 
+                'zombie_aggressive_4.mp3', 
+                'zombie_aggressive_5.mp3',
+            },
+        },
+    },
+	
     HumanEatingAndAttackingAnimation = true,
 
     DropLoot = true,
