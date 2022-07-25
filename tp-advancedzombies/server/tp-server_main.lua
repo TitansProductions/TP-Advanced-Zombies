@@ -35,3 +35,10 @@ AddEventHandler("tp-advancedzombies:onZombieSpawningStart", function()
 	TriggerClientEvent("tp-advancedzombies:onZombieSync", source)
 end)
 
+RegisterServerEvent('tp-advancedzombies:SyncSpeakingSoundsOnServer')
+AddEventHandler('tp-advancedzombies:SyncSpeakingSoundsOnServer', function(entiyCoords)
+
+    TriggerClientEvent('tp-advancedzombies:SyncSpeakingSoundsOnClient', source, entiyCoords)
+
+end)
+
