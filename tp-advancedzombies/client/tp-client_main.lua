@@ -10,6 +10,7 @@ local loadedPlayerData = true
 local isDead           = false
 
 local playerIsInSafezone = false
+local isPlayerCrouching  = false
 
 TriggerServerEvent("tp-advancedzombies:onZombieSpawningStart")
 TriggerServerEvent("tp-advancedzombies:onNewPlayerId", PlayerId())
@@ -30,6 +31,11 @@ AddEventHandler('disc-death:onPlayerRevive', function(data)
     isDead = false
 end)
 
+RegisterNetEvent("tp-advancedzombies:setCrouchingStatus")
+AddEventHandler("tp-advancedzombies:setCrouchingStatus", function(cb)
+	isPlayerCrouching = cb
+end)
+
 
 if Config.NotHealthRecharge then
 	SetPlayerHealthRechargeMultiplier(PlayerId(), 0.0)
@@ -43,6 +49,64 @@ RegisterNetEvent("tp-advancedzombies:onPlayerUpdate")
 AddEventHandler("tp-advancedzombies:onPlayerUpdate", function(mPlayers)
 	players = mPlayers
 end)
+
+if Config.Zombies.AttackPlayersOnShooting then
+
+    Citizen.CreateThread(function()
+        while true do
+            Citizen.Wait(0)
+    
+            if IsPedShooting(PlayerPedId()) then
+    
+                for i, v in pairs(entitys) do
+                    TaskGoToEntity(v.entity, PlayerPedId(), -1, 0.0, 500.0, 1073741824, 0)
+                end
+    
+            end
+        end
+    end)
+
+end
+
+if Config.Zombies.AttackPlayersBasedInDistance then
+
+    Citizen.CreateThread(function()
+        while true do
+            Citizen.Wait(Config.Zombies.DistanceAttackData.SleepTime)
+    
+            StartHuntingPlayerOnDistance()
+        end
+    end)
+
+    StartHuntingPlayerOnDistance = function()
+
+        for i, v in pairs(entitys) do
+            for j, player in pairs(players) do
+                local playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(player), true))
+                local distance = GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(player)), GetEntityCoords(v.entity), true)
+    
+                -- Playing zombie sounds when close to the player.
+                local requiredDistance = 0
+
+                if isPlayerCrouching then
+                    requiredDistance = Config.Zombies.DistanceAttackData.Crouching
+
+                elseif not isPlayerCrouching and IsPedSprinting(PlayerPedId()) then
+                    requiredDistance = Config.Zombies.DistanceAttackData.Sprinting
+
+                else
+                    requiredDistance = Config.Zombies.DistanceAttackData.Walking
+                end
+
+                if distance <= requiredDistance then
+                    TaskGoToEntity(v.entity, PlayerPedId(), -1, 0.0, 500.0, 1073741824, 0)
+                end
+    
+            end
+    
+        end
+    end
+end
 
 if Config.Zombies.PlayCustomSpeakingSounds then
     Citizen.CreateThread(function()
