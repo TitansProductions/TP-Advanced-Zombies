@@ -97,6 +97,17 @@ Config.Zombies = {
     MaxSpawnDistance  = 45,
     DespawnDistance   = 50,
 
+    AttackPlayersOnShooting = true,
+    AttackPlayersBasedInDistance = true,
+
+    DistanceAttackData = {
+        SleepTime = 1000,
+
+        Crouching = 10,
+        Walking = 35,
+        Sprinting = 45,
+    },
+	
     PlayCustomSpeakingSounds = true,
 
     SpeakingSounds = {
