@@ -498,7 +498,9 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 				local playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
 				local distance = GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), GetEntityCoords(entity), true)
 					
-				TaskGoToEntity(entity, GetPlayerPed(-1), -1, 0.0, 500.0, 1073741824, 0)
+				if not Config.Zombies.AttackPlayersBasedInDistance then
+				   TaskGoToEntity(entity, GetPlayerPed(-1), -1, 0.0, 500.0, 1073741824, 0)
+				end
 
                 if Config.Debug then
                     print("Spawned " .. EntityModel .. " zombie ped model with Max Health: {" .. entityMaxHealth .. "}.")
