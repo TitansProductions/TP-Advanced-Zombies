@@ -3,15 +3,18 @@
         <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
 
         <script>
-            
+
             window.addEventListener('message', function(event) {
 
 
                 if (event.data.Sound != null) {
 
                   const audioPlayer = new Audio("./sounds/" + event.data.Sound);
-                  audioPlayer.volume = event.data.Volume;
-                  audioPlayer.play();
+
+                  if (audioPlayer != null && audioPlayer !== undefined) {
+                    audioPlayer.volume = event.data.Volume;
+                    audioPlayer.play();
+                  }
 
                 }
             });
