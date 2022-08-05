@@ -113,7 +113,7 @@ if Config.Zombies.AttackPlayersBasedInDistance then
                 requiredDistance = Config.Zombies.DistanceAttackData.Walking
             end
 
-            if distance <= requiredDistance then
+            if distance <= requiredDistance and not isDead then
                 TaskGoToEntity(v.entity, PlayerPedId(), -1, 0.0, 500.0, 1073741824, 0)
             end
     
