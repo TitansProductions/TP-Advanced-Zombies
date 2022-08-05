@@ -92,7 +92,10 @@ Config.NotHealthRecharge = true
 Config.Zombies = {
     SpawnDelay        = 1000,     -- The time is in milliseconds, 1000 = 1 second.
 
-    SpawnZombie       = 20,
+    -- If you set this to true, zombies will only spawn in zones where you allow.
+    SpawnZombiesOnlyInZones = false,
+
+    SpawnZombie       = 5,
     MinSpawnDistance  = 30,
     MaxSpawnDistance  = 45,
     DespawnDistance   = 50,
@@ -268,6 +271,10 @@ Config.Zones = {
             Display = 4, 
             Id = 310, 
         },
+
+        -- if you add external zombie ped models, make sure to add them in the Config.ZombiePedModelsData.
+        ExtendedSpawnedZombies  = 5,
+        ExtendedZombiePedModels = {"zombie_ped_example1", "zombie_ped_example2"},
 	},
 
 	HumaneLabs = { 
@@ -288,6 +295,9 @@ Config.Zones = {
             Display = 4, 
             Id = 310, 
         },
+
+        ExtendedSpawnedZombies  = 0,
+        ExtendedZombiePedModels = nil,
 	},
 
     Cayo = {
@@ -308,6 +318,9 @@ Config.Zones = {
             Display = 4, 
             Id = 310, 
         },
+
+        ExtendedSpawnedZombies  = 0,
+        ExtendedZombiePedModels = nil,
 	},
 
 	MountChiliad = { 
@@ -327,7 +340,10 @@ Config.Zones = {
             Scale = 1.0, 
             Display = 4, 
             Id = 429, 
-        }
+        },
+
+        ExtendedSpawnedZombies  = 0,
+        ExtendedZombiePedModels = nil,
 	},
 
     StabCity = {
@@ -348,6 +364,9 @@ Config.Zones = {
             Display = 4, 
             Id = 429, 
         },
+
+        ExtendedSpawnedZombies  = 0,
+        ExtendedZombiePedModels = nil,
     },
 
 }
