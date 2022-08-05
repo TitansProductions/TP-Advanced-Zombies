@@ -1,10 +1,7 @@
 -- tp-advancedzombies:onPlayerZombieKill client event in order to send in server side.
 
-
-ESX, QBCore            = nil, nil
-
 zombiesList            = {}
-players, entitys       = {}, {}
+entitys                = {}
 
 local loadedPlayerData = true
 local isDead           = false
@@ -13,13 +10,8 @@ local playerIsInSafezone = false
 local isPlayerCrouching  = false
 
 TriggerServerEvent("tp-advancedzombies:onZombieSpawningStart")
-TriggerServerEvent("tp-advancedzombies:onNewPlayerId", PlayerId())
 
 AddEventHandler('esx:onPlayerDeath', function(data)
-    isDead = true
-end)
-
-AddEventHandler('hospital:server:SetDeathStatus', function(data)
     isDead = true
 end)
 
@@ -30,6 +22,7 @@ end)
 AddEventHandler('disc-death:onPlayerRevive', function(data)
     isDead = false
 end)
+
 
 RegisterNetEvent("tp-advancedzombies:setCrouchingStatus")
 AddEventHandler("tp-advancedzombies:setCrouchingStatus", function(cb)
@@ -45,10 +38,32 @@ if Config.MuteAmbience then
 	StartAudioScene('CHARACTER_CHANGE_IN_SKY_SCENE')
 end
 
-RegisterNetEvent("tp-advancedzombies:onPlayerUpdate")
-AddEventHandler("tp-advancedzombies:onPlayerUpdate", function(mPlayers)
-	players = mPlayers
-end)
+-- Getting the player if is dead or not based on QBCore without hospital requirement.
+if Config.Framework == "QBCore" then
+
+    Citizen.CreateThread(function()
+        while true do
+            Citizen.Wait(1000)
+
+            local player = PlayerId()
+
+            if NetworkIsPlayerActive(player) then
+
+                local playerPed = PlayerPedId()
+
+                if IsEntityDead(playerPed) and not isDead then
+                    isDead = true
+
+                elseif IsEntityDead(playerPed) and isDead then
+                    isDead = false
+                end
+                
+            end
+        end
+
+    end)
+end
+
 
 if Config.Zombies.AttackPlayersOnShooting then
 
@@ -81,28 +96,27 @@ if Config.Zombies.AttackPlayersBasedInDistance then
     StartHuntingPlayerOnDistance = function()
 
         for i, v in pairs(entitys) do
-            for j, player in pairs(players) do
-                local playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(player), true))
-                local distance = GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(player)), GetEntityCoords(v.entity), true)
-    
-                -- Playing zombie sounds when close to the player.
-                local requiredDistance = 0
 
-                if isPlayerCrouching then
-                    requiredDistance = Config.Zombies.DistanceAttackData.Crouching
+            local playerX, playerY, playerZ = table.unpack(GetEntityCoords(PlayerPedId(), true))
+            local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(v.entity), true)
 
-                elseif not isPlayerCrouching and IsPedSprinting(PlayerPedId()) then
-                    requiredDistance = Config.Zombies.DistanceAttackData.Sprinting
+            -- Playing zombie sounds when close to the player.
+            local requiredDistance = 0
 
-                else
-                    requiredDistance = Config.Zombies.DistanceAttackData.Walking
-                end
+            if isPlayerCrouching then
+                requiredDistance = Config.Zombies.DistanceAttackData.Crouching
 
-                if distance <= requiredDistance then
-                    TaskGoToEntity(v.entity, PlayerPedId(), -1, 0.0, 500.0, 1073741824, 0)
-                end
-    
+            elseif not isPlayerCrouching and IsPedSprinting(PlayerPedId()) then
+                requiredDistance = Config.Zombies.DistanceAttackData.Sprinting
+
+            else
+                requiredDistance = Config.Zombies.DistanceAttackData.Walking
             end
+
+            if distance <= requiredDistance then
+                TaskGoToEntity(v.entity, PlayerPedId(), -1, 0.0, 500.0, 1073741824, 0)
+            end
+    
     
         end
     end
@@ -120,15 +134,13 @@ if Config.Zombies.PlayCustomSpeakingSounds then
     StartPlayingZombieSpeakingSounds = function()
 
         for i, v in pairs(entitys) do
-            for j, player in pairs(players) do
-                local playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(player), true))
-                local distance = GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(player)), GetEntityCoords(v.entity), true)
-  
-                -- Playing zombie sounds when close to the player.
-                if distance <= 30.1 then
-                    TriggerServerEvent('tp-advancedzombies:SyncSpeakingSoundsOnServer', GetEntityCoords(v.entity))
-                end
 
+            local playerX, playerY, playerZ = table.unpack(GetEntityCoords(PlayerPedId(), true))
+            local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(v.entity), true)
+
+            -- Playing zombie sounds when close to the player.
+            if distance <= 30.1 then
+                TriggerServerEvent('tp-advancedzombies:SyncSpeakingSoundsOnServer', GetEntityCoords(v.entity))
             end
 
         end
@@ -186,30 +198,27 @@ if Config.Zombies.HumanEatingAndAttackingAnimation then
     StartHumanEatingAndAttackingAnimation = function()
 
         for i, v in pairs(entitys) do
-            for j, player in pairs(players) do
-                local playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(player), true))
-                local distance = GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(player)), GetEntityCoords(v.entity), true)
 
-                -- Playing zombies & players animation on attack.
-                if distance <= 1.2 and not isDead and not isHavingEmote then
-                    RequestAnimDict("misscarsteal4@actor")
-                    TaskPlayAnim(v.entity,"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
+            local playerX, playerY, playerZ = table.unpack(GetEntityCoords(PlayerPedId(), true))
+            local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(v.entity), true)
 
-                    RequestAnimDict("misscarsteal4@actor")
-                    TaskPlayAnim(PlayerPedId(),"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
+            -- Playing zombies & players animation on attack.
+            if distance <= 1.2 and not isDead and not isHavingEmote then
+                RequestAnimDict("misscarsteal4@actor")
+                TaskPlayAnim(v.entity,"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
 
-                    TaskGoToEntity(v.entity, PlayerPedId(), -1, 0.0, 500.0, 1073741824, 0)
-                end
+                RequestAnimDict("misscarsteal4@actor")
+                TaskPlayAnim(PlayerPedId(),"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
 
-                -- Playing zombies animation when a player is dead.
-                if distance <= 1.0 and isDead and not isHavingEmote then
-
-                    animsAction(v.entity, { lib = "amb@world_human_gardener_plant@female@idle_a", anim = "idle_a_female"}) 
-                end
-            
-
+                TaskGoToEntity(v.entity, PlayerPedId(), -1, 0.0, 500.0, 1073741824, 0)
             end
 
+            -- Playing zombies animation when a player is dead.
+            if distance <= 1.2 and isDead and not isHavingEmote then
+
+                animsAction(v.entity, { lib = "amb@world_human_gardener_plant@female@idle_a", anim = "idle_a_female"}) 
+            end
+            
         end
     end
 
@@ -437,16 +446,15 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 	
 					_,posZ = GetGroundZFor_3dCoord(posX+.0,posY+.0,z,1)
 	
-					for _, player in pairs(players) do
-						Wait(1)
-						playerX, playerY = table.unpack(GetEntityCoords(GetPlayerPed(player), true))
-						if posX > playerX - minSpawnDistance and posX < playerX + minSpawnDistance or posY > playerY - minSpawnDistance and posY < playerY + minSpawnDistance then
-							canSpawn = false
-							break
-						else
-							canSpawn = true
-						end
-					end
+                    Wait(1)
+                    playerX, playerY = table.unpack(GetEntityCoords(PlayerPedId(), true))
+                    if posX > playerX - minSpawnDistance and posX < playerX + minSpawnDistance or posY > playerY - minSpawnDistance and posY < playerY + minSpawnDistance then
+                        canSpawn = false
+                        break
+                    else
+                        canSpawn = true
+                    end
+
 				until canSpawn
 
 				local entity = CreatePed(4, GetHashKey(EntityModel), posX, posY, posZ, 0.0, false, false)
