@@ -9,6 +9,8 @@ local isDead           = false
 local playerIsInSafezone = false
 local isPlayerCrouching  = false
 
+local playerCurrentZone = nil
+
 TriggerServerEvent("tp-advancedzombies:onZombieSpawningStart")
 
 AddEventHandler('esx:onPlayerDeath', function(data)
@@ -43,14 +45,21 @@ if Config.Framework == "QBCore" then
 
     Citizen.CreateThread(function()
         while true do
-            Citizen.Wait(2000)
+            Citizen.Wait(1000)
 
             local player = PlayerId()
 
             if NetworkIsPlayerActive(player) then
-					
-	        isDead = IsEntityDead(PlayerPedId())
-					
+
+                local playerPed = PlayerPedId()
+
+                if IsEntityDead(playerPed) and not isDead then
+                    isDead = true
+
+                elseif IsEntityDead(playerPed) and isDead then
+                    isDead = false
+                end
+                
             end
         end
 
@@ -90,7 +99,6 @@ if Config.Zombies.AttackPlayersBasedInDistance then
 
         for i, v in pairs(entitys) do
 
-            local playerX, playerY, playerZ = table.unpack(GetEntityCoords(PlayerPedId(), true))
             local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(v.entity), true)
 
             -- Playing zombie sounds when close to the player.
@@ -128,7 +136,6 @@ if Config.Zombies.PlayCustomSpeakingSounds then
 
         for i, v in pairs(entitys) do
 
-            local playerX, playerY, playerZ = table.unpack(GetEntityCoords(PlayerPedId(), true))
             local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(v.entity), true)
 
             -- Playing zombie sounds when close to the player.
@@ -167,10 +174,14 @@ if Config.Zombies.PlayCustomSpeakingSounds then
         end
 
         if sounds ~= nil and next(sounds) ~= nil then
+
             SendNUIMessage({ 
-                Sound = sounds[ math.random( #sounds ) ], 
-                Volume = volume
+                action = "playSound",
+
+                sound = sounds[ math.random( #sounds ) ], 
+                soundVolume = volume
             })
+
         end
         
     end)
@@ -192,11 +203,16 @@ if Config.Zombies.HumanEatingAndAttackingAnimation then
 
         for i, v in pairs(entitys) do
 
-            local playerX, playerY, playerZ = table.unpack(GetEntityCoords(PlayerPedId(), true))
             local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(v.entity), true)
+
+            -- Playing zombies animation when a player is dead.
+            if distance <= 1.2 and isDead then
+                animsAction(v.entity, {lib = "amb@world_human_gardener_plant@female@idle_a", anim = "idle_a_female"}) 
+            end
 
             -- Playing zombies & players animation on attack.
             if distance <= 1.2 and not isDead then
+
                 RequestAnimDict("misscarsteal4@actor")
                 TaskPlayAnim(v.entity,"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
 
@@ -204,12 +220,6 @@ if Config.Zombies.HumanEatingAndAttackingAnimation then
                 TaskPlayAnim(PlayerPedId(),"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
 
                 TaskGoToEntity(v.entity, PlayerPedId(), -1, 0.0, 500.0, 1073741824, 0)
-            end
-
-            -- Playing zombies animation when a player is dead.
-            if distance <= 1.2 and isDead then
-
-                animsAction(v.entity, { lib = "amb@world_human_gardener_plant@female@idle_a", anim = "idle_a_female"}) 
             end
             
         end
@@ -372,6 +382,8 @@ end
 
 
 AddEventHandler('tp-advancedzombies:hasEnteredZone', function(zone, type, blockPlayerAggressiveActions, blockZombiePedSpawning)
+    playerCurrentZone = zone
+
     if blockZombiePedSpawning then
         playerIsInSafezone = true
     end
@@ -379,6 +391,7 @@ end)
 
 AddEventHandler('tp-advancedzombies:hasExitedZone', function(zone)
     playerIsInSafezone = false
+    playerCurrentZone  = nil
 end)
 
 RegisterNetEvent("tp-advancedzombies:onZombieSync")
@@ -416,11 +429,45 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 
 		if loadedPlayerData and not playerIsInSafezone then
 
+            local canSpawnZombies = false
+
+            -- if Config.Zombies.SpawnZombiesOnlyInZones is enabled, it checks if the zone player is inside allows zombie spawning.
+            if Config.Zombies.SpawnZombiesOnlyInZones then
+                if Config.Zones[playerCurrentZone] and not Config.Zones[playerCurrentZone].BlockZombiePedSpawning then
+                    canSpawnZombies = true
+                end
+            else
+                canSpawnZombies = true
+            end
+
+            -- Adding external zombie spawning if the zone allows to do that.
+            if Config.Zones[playerCurrentZone] and Config.Zones[playerCurrentZone].ExtendedSpawnedZombies then
+                if Config.Zones[playerCurrentZone].ExtendedSpawnedZombies > 0 then
+                    spawnZombies = spawnZombies + Config.Zones[playerCurrentZone].ExtendedSpawnedZombies
+                end
+            end
+
 			if #entitys < spawnZombies then
 				
 				x, y, z = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
 
-				EntityModel = Config.ZombiePedModels[math.random(1, #Config.ZombiePedModels)]
+                local pedModelsList = {}
+
+                for _k1, _v1 in pairs (Config.ZombiePedModels) do
+                    table.insert(pedModelsList, _v1)
+                end
+
+                -- Adding external zombie types if the zone allows to do that.
+                if Config.Zones[playerCurrentZone] and Config.Zones[playerCurrentZone].ExtendedZombiePedModels then
+                    for _k2, _v2 in pairs (Config.Zones[playerCurrentZone].ExtendedZombiePedModels) do
+
+                        table.insert(pedModelsList, _v2)
+                    end
+                end
+
+                Wait(500)
+
+				EntityModel = pedModelsList[math.random(1, #pedModelsList)]
 				EntityModel = string.upper(EntityModel)
 				RequestModel(GetHashKey(EntityModel))
 				while not HasModelLoaded(GetHashKey(EntityModel)) or not HasCollisionForModelLoaded(GetHashKey(EntityModel)) do
