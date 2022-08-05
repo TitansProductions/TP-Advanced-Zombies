@@ -142,6 +142,9 @@ Config.Zombies = {
         PickupKey = 51,
         
         DropLootChance = 70,
+		
+	-- RemoveLootSleepTime is in minutes to remove the loot after an amount of time if the player is not picking it up.
+        RemoveLootSleepTime = 2,
 
         LootMarker = {
     
