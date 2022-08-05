@@ -48,16 +48,9 @@ if Config.Framework == "QBCore" then
             local player = PlayerId()
 
             if NetworkIsPlayerActive(player) then
-
-                local playerPed = PlayerPedId()
-
-                if IsEntityDead(playerPed) and not isDead then
-                    isDead = true
-
-                elseif IsEntityDead(playerPed) and isDead then
-                    isDead = false
-                end
-                
+					
+	        isDead = IsEntityDead(PlayerPedId())
+					
             end
         end
 
