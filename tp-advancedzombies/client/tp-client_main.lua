@@ -203,7 +203,7 @@ if Config.Zombies.HumanEatingAndAttackingAnimation then
             local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(v.entity), true)
 
             -- Playing zombies & players animation on attack.
-            if distance <= 1.2 and not isDead and not isHavingEmote then
+            if distance <= 1.2 and not isDead then
                 RequestAnimDict("misscarsteal4@actor")
                 TaskPlayAnim(v.entity,"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
 
@@ -214,7 +214,7 @@ if Config.Zombies.HumanEatingAndAttackingAnimation then
             end
 
             -- Playing zombies animation when a player is dead.
-            if distance <= 1.2 and isDead and not isHavingEmote then
+            if distance <= 1.2 and isDead then
 
                 animsAction(v.entity, { lib = "amb@world_human_gardener_plant@female@idle_a", anim = "idle_a_female"}) 
             end
