@@ -43,7 +43,7 @@ if Config.Framework == "QBCore" then
 
     Citizen.CreateThread(function()
         while true do
-            Citizen.Wait(1000)
+            Citizen.Wait(2000)
 
             local player = PlayerId()
 
