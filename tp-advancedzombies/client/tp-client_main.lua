@@ -357,12 +357,15 @@ if Config.Zombies.DropLoot then
                     if randomChance <= dropLootChance then
 
                         table.insert(zombiesList,{
+                            entity = v.entity,
                             entityName = v.name,
 
                             x = deadZombieLocation.x,
                             y = deadZombieLocation.y,
                             z = deadZombieLocation.z,
                         })
+
+                        TriggerServerEvent("tp-advancedzombies:getZombieEntityOnServer", {entity = v.entity, entityName = v.name, x = deadZombieLocation.x, y = deadZombieLocation.y, z = deadZombieLocation.z,} )
         
                     end
     
@@ -378,6 +381,22 @@ if Config.Zombies.DropLoot then
             end
         end
     end
+
+    RegisterNetEvent("tp-advancedzombies:getZombieEntityOnClient")
+    AddEventHandler("tp-advancedzombies:getZombieEntityOnClient", function(data)
+
+        Wait(60000 * Config.Zombies.Loot.RemoveLootSleepTime)
+        
+        if zombiesList then
+            for k, v in pairs(zombiesList) do
+
+                if v.entity == data.entity then
+                    table.remove(zombiesList, k)
+                end
+            end
+        end
+
+    end)
 end
 
 
