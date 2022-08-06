@@ -459,118 +459,123 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
                 canSpawnZombies = true
             end
 
-            -- Adding external zombie spawning if the zone allows to do that.
-            if Config.Zones[playerCurrentZone] and Config.Zones[playerCurrentZone].ExtendedSpawnedZombies then
-                if Config.Zones[playerCurrentZone].ExtendedSpawnedZombies > 0 then
-                    spawnZombies = spawnZombies + Config.Zones[playerCurrentZone].ExtendedSpawnedZombies
-                end
-            end
+            Wait(500)
 
-			if #entitys < spawnZombies then
-				
-				x, y, z = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
+            if canSpawnZombies then
 
-                local pedModelsList = {}
-
-                for _k1, _v1 in pairs (Config.ZombiePedModels) do
-                    table.insert(pedModelsList, _v1)
-                end
-
-                -- Adding external zombie types if the zone allows to do that.
-                if Config.Zones[playerCurrentZone] and Config.Zones[playerCurrentZone].ExtendedZombiePedModels then
-                    for _k2, _v2 in pairs (Config.Zones[playerCurrentZone].ExtendedZombiePedModels) do
-
-                        table.insert(pedModelsList, _v2)
+                -- Adding external zombie spawning if the zone allows to do that.
+                if Config.Zones[playerCurrentZone] and Config.Zones[playerCurrentZone].ExtendedSpawnedZombies then
+                    if Config.Zones[playerCurrentZone].ExtendedSpawnedZombies > 0 then
+                        spawnZombies = spawnZombies + Config.Zones[playerCurrentZone].ExtendedSpawnedZombies
                     end
                 end
-
-                Wait(500)
-
-				EntityModel = pedModelsList[math.random(1, #pedModelsList)]
-				EntityModel = string.upper(EntityModel)
-				RequestModel(GetHashKey(EntityModel))
-				while not HasModelLoaded(GetHashKey(EntityModel)) or not HasCollisionForModelLoaded(GetHashKey(EntityModel)) do
-					Wait(1)
-				end
-				
-				local posX = x
-				local posY = y
-				local posZ = z + 999.0
-	
-				repeat
-					Wait(1)
-	
-					posX = x + math.random(-maxSpawnDistance, maxSpawnDistance)
-					posY = y + math.random(-maxSpawnDistance, maxSpawnDistance)
-	
-					_,posZ = GetGroundZFor_3dCoord(posX+.0,posY+.0,z,1)
-	
-                    Wait(1)
-                    playerX, playerY = table.unpack(GetEntityCoords(PlayerPedId(), true))
-                    if posX > playerX - minSpawnDistance and posX < playerX + minSpawnDistance or posY > playerY - minSpawnDistance and posY < playerY + minSpawnDistance then
-                        canSpawn = false
-                        break
-                    else
-                        canSpawn = true
+    
+                if #entitys < spawnZombies then
+                    
+                    x, y, z = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
+    
+                    local pedModelsList = {}
+    
+                    for _k1, _v1 in pairs (Config.ZombiePedModels) do
+                        table.insert(pedModelsList, _v1)
                     end
-
-				until canSpawn
-
-				local entity = CreatePed(4, GetHashKey(EntityModel), posX, posY, posZ, 0.0, false, false)
-                local entityMaxHealth = Config.ZombiePedModelsData[string.lower(EntityModel)].data.health
-
-                SetEntityHealth(entity, entityMaxHealth)
-
-				local walk = Config.ZombiePedModelWalks[math.random(1, #Config.ZombiePedModelWalks)]
-							
-				RequestAnimSet(walk)
-				while not HasAnimSetLoaded(walk) do
-					Citizen.Wait(1)
-				end
-	
-	
-				--TaskGoToEntity(entity, GetPlayerPed(-1), -1, 0.0, 1.0, 1073741824, 0)
-				SetPedMovementClipset(entity, walk, 1.5)
-				TaskWanderStandard(entity, 10.0, 10)
-				SetCanAttackFriendly(entity, true, true)
-				SetPedCanEvasiveDive(entity, false)
-				SetPedRelationshipGroupHash(entity, GetHashKey("zombie"))
-				SetPedCombatAbility(entity, 0)
-				SetPedMoveRateOverride(entity,10.0)
-				SetRunSprintMultiplierForPlayer(entity, 1.49)
-				SetPedCombatRange(entity,0)
-
-				SetPedCombatMovement(entity, 0)
-				SetPedAlertness(entity,0)
-				--SetPedIsDrunk(entity, true)
-				SetPedConfigFlag(entity,100,1)
-
-				ApplyPedDamagePack(entity,"BigHitByVehicle", 1.0, 9.0)
-				ApplyPedDamagePack(entity,"SCR_Dumpster", 1.0, 9.0)
-				ApplyPedDamagePack(entity,"SCR_Torture", 1.0, 9.0)
-				ApplyPedDamagePack(entity,"Splashback_Face_0", 1.0, 9.0)
-				ApplyPedDamagePack(entity,"SCR_Cougar", 1.0, 9.0)
-				ApplyPedDamagePack(entity,"SCR_Shark", 1.0, 9.0)
-	
-				DisablePedPainAudio(entity, true)
-				StopPedSpeaking(entity,true)
-				SetEntityAsMissionEntity(entity, true, true)
-	
-				--if not NetworkGetEntityIsNetworked(entity) then
-				--	NetworkRegisterEntityAsNetworked(entity)
-				--end
-	
-				table.insert(entitys, {entity = entity, name = EntityModel})
-
-				local playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
-				local distance = GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), GetEntityCoords(entity), true)
-					
-				if not Config.Zombies.AttackPlayersBasedInDistance then
-				   TaskGoToEntity(entity, GetPlayerPed(-1), -1, 0.0, 500.0, 1073741824, 0)
-				end
-
-                if Config.Debug then
-                    print("Spawned " .. EntityModel .. " zombie ped model with Max Health: {" .. entityMaxHealth .. "}.")
+    
+                    -- Adding external zombie types if the zone allows to do that.
+                    if Config.Zones[playerCurrentZone] and Config.Zones[playerCurrentZone].ExtendedZombiePedModels then
+                        for _k2, _v2 in pairs (Config.Zones[playerCurrentZone].ExtendedZombiePedModels) do
+    
+                            table.insert(pedModelsList, _v2)
+                        end
+                    end
+    
+                    Wait(500)
+    
+                    EntityModel = pedModelsList[math.random(1, #pedModelsList)]
+                    EntityModel = string.upper(EntityModel)
+                    RequestModel(GetHashKey(EntityModel))
+                    while not HasModelLoaded(GetHashKey(EntityModel)) or not HasCollisionForModelLoaded(GetHashKey(EntityModel)) do
+                        Wait(1)
+                    end
+                    
+                    local posX = x
+                    local posY = y
+                    local posZ = z + 999.0
+        
+                    repeat
+                        Wait(1)
+        
+                        posX = x + math.random(-maxSpawnDistance, maxSpawnDistance)
+                        posY = y + math.random(-maxSpawnDistance, maxSpawnDistance)
+        
+                        _,posZ = GetGroundZFor_3dCoord(posX+.0,posY+.0,z,1)
+        
+                        Wait(1)
+                        playerX, playerY = table.unpack(GetEntityCoords(PlayerPedId(), true))
+                        if posX > playerX - minSpawnDistance and posX < playerX + minSpawnDistance or posY > playerY - minSpawnDistance and posY < playerY + minSpawnDistance then
+                            canSpawn = false
+                            break
+                        else
+                            canSpawn = true
+                        end
+    
+                    until canSpawn
+    
+                    local entity = CreatePed(4, GetHashKey(EntityModel), posX, posY, posZ, 0.0, false, false)
+                    local entityMaxHealth = Config.ZombiePedModelsData[string.lower(EntityModel)].data.health
+    
+                    SetEntityHealth(entity, entityMaxHealth)
+    
+                    local walk = Config.ZombiePedModelWalks[math.random(1, #Config.ZombiePedModelWalks)]
+                                
+                    RequestAnimSet(walk)
+                    while not HasAnimSetLoaded(walk) do
+                        Citizen.Wait(1)
+                    end
+        
+        
+                    --TaskGoToEntity(entity, GetPlayerPed(-1), -1, 0.0, 1.0, 1073741824, 0)
+                    SetPedMovementClipset(entity, walk, 1.5)
+                    TaskWanderStandard(entity, 10.0, 10)
+                    SetCanAttackFriendly(entity, true, true)
+                    SetPedCanEvasiveDive(entity, false)
+                    SetPedRelationshipGroupHash(entity, GetHashKey("zombie"))
+                    SetPedCombatAbility(entity, 0)
+                    SetPedMoveRateOverride(entity,10.0)
+                    SetRunSprintMultiplierForPlayer(entity, 1.49)
+                    SetPedCombatRange(entity,0)
+    
+                    SetPedCombatMovement(entity, 0)
+                    SetPedAlertness(entity,0)
+                    --SetPedIsDrunk(entity, true)
+                    SetPedConfigFlag(entity,100,1)
+    
+                    ApplyPedDamagePack(entity,"BigHitByVehicle", 1.0, 9.0)
+                    ApplyPedDamagePack(entity,"SCR_Dumpster", 1.0, 9.0)
+                    ApplyPedDamagePack(entity,"SCR_Torture", 1.0, 9.0)
+                    ApplyPedDamagePack(entity,"Splashback_Face_0", 1.0, 9.0)
+                    ApplyPedDamagePack(entity,"SCR_Cougar", 1.0, 9.0)
+                    ApplyPedDamagePack(entity,"SCR_Shark", 1.0, 9.0)
+        
+                    DisablePedPainAudio(entity, true)
+                    StopPedSpeaking(entity,true)
+                    SetEntityAsMissionEntity(entity, true, true)
+        
+                    --if not NetworkGetEntityIsNetworked(entity) then
+                    --	NetworkRegisterEntityAsNetworked(entity)
+                    --end
+        
+                    table.insert(entitys, {entity = entity, name = EntityModel})
+    
+                    local playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
+                    local distance = GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), GetEntityCoords(entity), true)
+                        
+                    if not Config.Zombies.AttackPlayersBasedInDistance then
+                       TaskGoToEntity(entity, GetPlayerPed(-1), -1, 0.0, 500.0, 1073741824, 0)
+                    end
+    
+                    if Config.Debug then
+                        print("Spawned " .. EntityModel .. " zombie ped model with Max Health: {" .. entityMaxHealth .. "}.")
+                    end
                 end
 		
 			end	
