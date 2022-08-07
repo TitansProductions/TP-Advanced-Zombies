@@ -1,7 +1,7 @@
 Config = {}
 Config.Debug              = false
 
--- [FRAMEWORKS SUPPORTED]: ESX, QBCore
+-- [FRAMEWORKS SUPPORTED]: ESX, QBCore, Standalone
 Config.Framework          = "ESX"
 
 -- When set to true, all the default fivem vehicles and peds (npcs) will not be spawned.
