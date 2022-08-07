@@ -219,7 +219,7 @@ if Config.Zombies.HumanEatingAndAttackingAnimation then
 end
 
 -- On Zombie Peds Looting
-if Config.Zombies.DropLoot then
+if Config.Zombies.DropLoot and Config.Framework ~= "Standalone" then
 
     local markerType      = Config.Zombies.Loot.LootMarker.Type
     local scales          = {x = Config.Zombies.Loot.LootMarker.ScaleX, y = Config.Zombies.Loot.LootMarker.ScaleY, z = Config.Zombies.Loot.LootMarker.ScaleZ}
@@ -311,84 +311,88 @@ if Config.Zombies.DropLoot then
         end
     end)
 
-    -- On Zombie Killing in order to get the dropped loot.
-    Citizen.CreateThread(function()
-        while true do
-            Citizen.Wait(0)
-
-            StartCheckingZombiePedKills()
-        end
-    end)
-
-    StartCheckingZombiePedKills = function()
-        local dropLootChance = Config.Zombies.Loot.DropLootChance
-
-        for i, v in pairs(entitys) do
-            playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
-    
-            pedX, pedY, pedZ = table.unpack(GetEntityCoords(v.entity, true))
-    
-            if not DoesEntityExist(v.entity) then
-                table.remove(entitys, i)
-            end
-    
-            if IsPedDeadOrDying(v.entity, 1) == 1 then
-                if GetPedSourceOfDeath(v.entity) == PlayerPedId() then
-    
-                    local deadZombieLocation = GetEntityCoords(v.entity, true)
-    
-                    TriggerEvent("tp-advancedzombies:onPlayerZombieKill")
-
-                    local randomChance = math.random(0, 100)
-                                    
-                    if Config.Debug then
-                        print("Killed a {".. v.name .."} zombie ped model with a random chance of dropping loot {" .. randomChance .. " <= " .. dropLootChance .. "}.")
-                    end
-
-                    if randomChance <= dropLootChance then
-
-                        table.insert(zombiesList,{
-                            entity = v.entity,
-                            entityName = v.name,
-
-                            x = deadZombieLocation.x,
-                            y = deadZombieLocation.y,
-                            z = deadZombieLocation.z,
-                        })
-
-                        TriggerServerEvent("tp-advancedzombies:getZombieEntityOnServer", {entity = v.entity, entityName = v.name, x = deadZombieLocation.x, y = deadZombieLocation.y, z = deadZombieLocation.z,} )
-        
-                    end
-    
-                    local model = GetEntityModel(v.entity)
-                    SetEntityAsNoLongerNeeded(v.entity)
-                    SetModelAsNoLongerNeeded(model)
-                    table.remove(entitys, i)
-    
-                    Wait(2000)
-                
-                    DeleteEntity(v.entity)
-                end
-            end
-        end
-    end
-
     RegisterNetEvent("tp-advancedzombies:getZombieEntityOnClient")
     AddEventHandler("tp-advancedzombies:getZombieEntityOnClient", function(data)
 
         Wait(60000 * Config.Zombies.Loot.RemoveLootSleepTime)
-        
+    
         if zombiesList then
             for k, v in pairs(zombiesList) do
-
+    
                 if v.entity == data.entity then
                     table.remove(zombiesList, k)
                 end
             end
         end
-
+    
     end)
 end
+
+--if Config.Zombies.DropLoot and Config.Framework ~= "Standalone" then
+-- On Zombie Killing counter and dropped loot system.
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+
+        StartCheckingZombiePedKills()
+    end
+end)
+
+StartCheckingZombiePedKills = function()
+    local dropLootChance = Config.Zombies.Loot.DropLootChance
+
+    for i, v in pairs(entitys) do
+        playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
+
+        pedX, pedY, pedZ = table.unpack(GetEntityCoords(v.entity, true))
+
+        if not DoesEntityExist(v.entity) then
+            table.remove(entitys, i)
+        end
+
+        if IsPedDeadOrDying(v.entity, 1) == 1 then
+            if GetPedSourceOfDeath(v.entity) == PlayerPedId() then
+
+                local deadZombieLocation = GetEntityCoords(v.entity, true)
+
+                TriggerEvent("tp-advancedzombies:onPlayerZombieKill")
+
+                if Config.Zombies.DropLoot and Config.Framework ~= "Standalone" then
+                    local randomChance = math.random(0, 100)
+                                
+                    if Config.Debug then
+                        print("Killed a {".. v.name .."} zombie ped model with a random chance of dropping loot {" .. randomChance .. " <= " .. dropLootChance .. "}.")
+                    end
+    
+                    if randomChance <= dropLootChance then
+    
+                        table.insert(zombiesList,{
+                            entity = v.entity,
+                            entityName = v.name,
+    
+                            x = deadZombieLocation.x,
+                            y = deadZombieLocation.y,
+                            z = deadZombieLocation.z,
+                        })
+    
+                        TriggerServerEvent("tp-advancedzombies:getZombieEntityOnServer", {entity = v.entity, entityName = v.name, x = deadZombieLocation.x, y = deadZombieLocation.y, z = deadZombieLocation.z,} )
+        
+                    end
+                end
+
+                local model = GetEntityModel(v.entity)
+                SetEntityAsNoLongerNeeded(v.entity)
+                SetModelAsNoLongerNeeded(model)
+                table.remove(entitys, i)
+
+                Wait(2000)
+            
+                DeleteEntity(v.entity)
+            end
+        end
+    end
+end
+
 
 
 AddEventHandler('tp-advancedzombies:hasEnteredZone', function(zone, type, blockPlayerAggressiveActions, blockZombiePedSpawning)
