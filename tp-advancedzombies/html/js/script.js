@@ -2,7 +2,7 @@ $(function() {
 	
 	window.addEventListener('message', function(event) {
 		
-		if (event.data.type == "playSound") {
+		if (event.data.action == "playSound") {
 
             if (event.data.sound != null) {
 
