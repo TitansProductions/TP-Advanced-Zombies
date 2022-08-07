@@ -1,23 +1,9 @@
 <html>
-    <head>
-        <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
 
-        <script>
+    <body>
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+      <script src="js/script.js" type="text/javascript"></script>
+    </body>
 
-            window.addEventListener('message', function(event) {
-
-                if (event.data.Sound != null) {
-
-                  const audioPlayer = new Audio("./sounds/" + event.data.Sound);
-
-                  if (audioPlayer != null && audioPlayer !== undefined) {
-                    audioPlayer.volume = event.data.Volume;
-                    audioPlayer.play();
-                  }
-
-                }
-            });
-            
-        </script>
-    </head>
 </html>
