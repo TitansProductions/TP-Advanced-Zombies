@@ -2,8 +2,8 @@ fx_version 'adamant'
 game 'gta5'
 
 author 'Nosmakos'
-description 'Titans Productions Advanced Zombies System (Supporting ESX & QBCore)'
-version '1.5.2'
+description 'Titans Productions Advanced Zombies System (Supporting ESX, QBCore & Standalone)'
+version '1.6.0'
 
 ui_page 'html/index.html'
 
