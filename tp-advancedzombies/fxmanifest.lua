@@ -23,6 +23,7 @@ client_scripts {
 
 files {
     'html/index.html',
+    'html/js/script.js',
     'html/sounds/*.ogg',
     'html/sounds/*.mp3'
 }
