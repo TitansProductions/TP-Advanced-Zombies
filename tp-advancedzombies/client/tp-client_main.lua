@@ -40,26 +40,17 @@ if Config.MuteAmbience then
 	StartAudioScene('CHARACTER_CHANGE_IN_SKY_SCENE')
 end
 
--- Getting the player if is dead or not based on QBCore without hospital requirement.
-if Config.Framework == "QBCore" then
+-- Getting the player if is dead or not based on QBCore and Standalone.
+if Config.Framework == "QBCore" or Config.Framework == "Standalone" then
 
     Citizen.CreateThread(function()
         while true do
             Citizen.Wait(1000)
 
-            local player = PlayerId()
+            if NetworkIsPlayerActive(PlayerId()) then
 
-            if NetworkIsPlayerActive(player) then
-
-                local playerPed = PlayerPedId()
-
-                if IsEntityDead(playerPed) and not isDead then
-                    isDead = true
-
-                elseif IsEntityDead(playerPed) and isDead then
-                    isDead = false
-                end
-                
+                isDead = IsEntityDead(PlayerPedId())
+            
             end
         end
 
