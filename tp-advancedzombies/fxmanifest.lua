@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'Nosmakos'
 description 'Titans Productions Advanced Zombies System (Supporting ESX, QBCore & Standalone)'
-version '1.6.1'
+version '1.6.2'
 
 ui_page 'html/index.html'
 
