@@ -605,6 +605,18 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 	end
 end)
 
+-- On Zombie Headshot Modifier System
+Citizen.CreateThread(function()
+    while true do
+        Wait(0)
+
+        for i, v in pairs(entitys) do
+            SetPedSuffersCriticalHits(v.entity, Config.ZombiePedModelsData[string.lower(v.name)].data.headshot_instakill)
+        end
+    end
+
+end)
+
 Citizen.CreateThread(function()
 
     while true do
