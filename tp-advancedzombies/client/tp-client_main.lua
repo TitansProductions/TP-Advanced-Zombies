@@ -416,7 +416,7 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 	SetRelationshipBetweenGroups(2, GetHashKey("PLAYER"), GetHashKey("zombie"))
 
 
-    local spawnZombies     = Config.Zombies.SpawnZombie
+    local spawnZombies     = 0
     local maxSpawnDistance = Config.Zombies.MaxSpawnDistance
     local minSpawnDistance = Config.Zombies.MinSpawnDistance
     local despawnDistance  = Config.Zombies.DespawnDistance
@@ -457,6 +457,16 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
             Wait(500)
 
             if canSpawnZombies then
+					
+		local TimeOfDay = GetClockHours()
+
+                if TimeOfDay >= 18 and TimeOfDay <= 6 then
+                    spawnZombies = Config.Zombies.SpawnZombieAtNight
+                else
+                    spawnZombies = Config.Zombies.SpawnZombieAtDaylight
+                end
+
+                Wait(100)
 
                 -- Adding external zombie spawning if the zone allows to do that.
                 if Config.Zones[playerCurrentZone] and Config.Zones[playerCurrentZone].ExtendedSpawnedZombies then
