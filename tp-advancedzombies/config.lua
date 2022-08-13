@@ -95,10 +95,12 @@ Config.Zombies = {
     -- If you set this to true, zombies will only spawn in zones where you allow.
     SpawnZombiesOnlyInZones = false,
 
-    SpawnZombie       = 5,
-    MinSpawnDistance  = 30,
-    MaxSpawnDistance  = 45,
-    DespawnDistance   = 50,
+    SpawnZombieAtDaylight = 5,
+    SpawnZombieAtNight    = 10,
+	
+    MinSpawnDistance      = 30,
+    MaxSpawnDistance      = 45,
+    DespawnDistance       = 50,
 
     AttackPlayersOnShooting = true,
     AttackPlayersBasedInDistance = true,
