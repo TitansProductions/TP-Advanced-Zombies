@@ -429,13 +429,13 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 		if loadedPlayerData and playerIsInSafezone then
 			for i, v in pairs(entitys) do
 				pedX, pedY, pedZ = table.unpack(GetEntityCoords(v.entity, true))
-				if not DoesEntityExist(v.entity) then
-					table.remove(entitys, i)
-				end
 
-				local model = GetEntityModel(v.entity)
-				SetEntityAsNoLongerNeeded(v.entity)
-				SetModelAsNoLongerNeeded(model)
+                                --Citizen.Trace("Zombie Eliminated from refuge\n")
+                                SetEntityHealth(v.entity, 0)
+
+                                SetEntityAsNoLongerNeeded(v.entity)
+				SetModelAsNoLongerNeeded(GetEntityModel(v.entity))
+
 				DeleteEntity(v.entity)
 				table.remove(entitys,i)
 			end
