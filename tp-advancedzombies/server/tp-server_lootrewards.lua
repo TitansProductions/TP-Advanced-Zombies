@@ -54,27 +54,30 @@ AddEventHandler("tp-advancedzombies:onZombiesLootReward", function(entityName)
     
             if rewardData.weapons then
     
-                local randomChance = math.random(0, 100)
+                for k, v in pairs (rewardData.weapons) do
+
+                    local randomChance = math.random(0, 100)
     
-                if randomChance <= v.chance then
-    
-                    if v.randomAmount then
-                        local randomAmount = math.random(v.min, v.max)
-    
-                        if randomAmount <= 0 then
-                            xPlayer.addWeapon(k, 1)
+                    if randomChance <= v.chance then
+        
+                        if v.randomAmount then
+                            local randomAmount = math.random(v.min, v.max)
+        
+                            if randomAmount <= 0 then
+                                xPlayer.addWeapon(k, 1)
+                            else
+                                xPlayer.addWeapon(k, randomAmount)
+                            end
+        
                         else
-                            xPlayer.addWeapon(k, randomAmount)
+                            if v.max <= 0 then
+                                xPlayer.addInventoryItem(k, 1)
+                            else
+                                xPlayer.addInventoryItem(k, v.max)
+                            end
                         end
-    
-                    else
-                        if v.max <= 0 then
-                            xPlayer.addInventoryItem(k, 1)
-                        else
-                            xPlayer.addInventoryItem(k, v.max)
-                        end
+        
                     end
-    
                 end
     
             end
@@ -119,27 +122,29 @@ AddEventHandler("tp-advancedzombies:onZombiesLootReward", function(entityName)
     
             if rewardData.weapons then
     
-                local randomChance = math.random(0, 100)
+                for k, v in pairs (rewardData.weapons) do
+                    local randomChance = math.random(0, 100)
     
-                if randomChance <= v.chance then
-    
-                    if v.randomAmount then
-                        local randomAmount = math.random(v.min, v.max)
-    
-                        if randomAmount <= 0 then
-                            xPlayer.Functions.AddItem(k, 1)
+                    if randomChance <= v.chance then
+        
+                        if v.randomAmount then
+                            local randomAmount = math.random(v.min, v.max)
+        
+                            if randomAmount <= 0 then
+                                xPlayer.Functions.AddItem(k, 1)
+                            else
+                                xPlayer.Functions.AddItem(k, randomAmount)
+                            end
+        
                         else
-                            xPlayer.Functions.AddItem(k, randomAmount)
+                            if v.max <= 0 then
+                                xPlayer.Functions.AddItem(k, 1)
+                            else
+                                xPlayer.Functions.AddItem(k, v.max)
+                            end
                         end
-    
-                    else
-                        if v.max <= 0 then
-                            xPlayer.Functions.AddItem(k, 1)
-                        else
-                            xPlayer.Functions.AddItem(k, v.max)
-                        end
+        
                     end
-    
                 end
     
             end
