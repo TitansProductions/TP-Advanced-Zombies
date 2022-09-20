@@ -50,6 +50,13 @@ AddEventHandler("tp-advancedzombies:updatePlayerDeathStatistics", function()
 
 end)
 
+-- Supporting QBCore Hospital in order to update player deaths.
+AddEventHandler('hospital:client:RespawnAtHospital', function()
+    if Config.UserStatisticsRanking then
+        TriggerServerEvent("tp-advancedzombies:updatePlayerStatistics", "deaths", 1)
+    end
+end)
+
 function updatePlayerStatistics(type, count)
     if Config.UserStatisticsRanking then
         TriggerServerEvent("tp-advancedzombies:updatePlayerStatistics", type, count)
