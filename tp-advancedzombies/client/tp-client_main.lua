@@ -556,7 +556,8 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
     
                     Wait(500)
     
-                    EntityModel = pedModelsList[math.random(1, #pedModelsList)]
+                    local EntityModel = pedModelsList[math.random(1, #pedModelsList)]
+
                     EntityModel = string.upper(EntityModel)
                     RequestModel(GetHashKey(EntityModel))
                     while not HasModelLoaded(GetHashKey(EntityModel)) or not HasCollisionForModelLoaded(GetHashKey(EntityModel)) do
@@ -587,7 +588,7 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
                     until canSpawn
     
                     local entity = CreatePed(4, GetHashKey(EntityModel), posX, posY, posZ, 0.0, false, false)
-                    local entityMaxHealth = Config.ZombiePedModelsData[EntityModel].data.health
+                    local entityMaxHealth = Config.ZombiePedModelsData[string.lower(EntityModel)].data.health
     
                     SetEntityHealth(entity, entityMaxHealth)
     
@@ -682,7 +683,7 @@ Citizen.CreateThread(function()
         Wait(0)
 
         for i, v in pairs(entitys) do
-            SetPedSuffersCriticalHits(v.entity, Config.ZombiePedModelsData[v.name].data.headshot_instakill)
+            SetPedSuffersCriticalHits(v.entity, Config.ZombiePedModelsData[string.lower(v.name)].data.headshot_instakill)
         end
     end
 
@@ -707,7 +708,7 @@ Citizen.CreateThread(function()
 
 							local playerPed = PlayerPedId()
 
-                            local entityName = v.name
+                            local entityName = string.lower(v.name)
 
                             local withoutArmorDamage     = Config.ZombiePedModelsData[entityName].data.damage_without_armor
                             local armorDamage            = Config.ZombiePedModelsData[entityName].data.damage_with_armor
