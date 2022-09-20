@@ -1,0 +1,378 @@
+body {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+
+    text-align: center;
+	justify-content: center;
+	align-items: center;
+}
+*{
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+#advancedzombies{
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+
+
+	background-size: cover;
+	background-color: rgba(1, 1, 5, 0.863);
+
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.4);
+
+
+overflow: hidden;
+width: 100%;
+height: 100%;
+
+justify-content: center;
+
+-webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently */
+}
+
+/* LEFT SIDE */
+#center-side{
+  border-radius: 5%;
+  width: 70%;
+  height: 80%;
+  margin: 0% 0% 5% 15%;
+}
+
+#server_logo {
+	position: absolute;
+	width: 12.0%;
+	height: 20%;
+
+	margin-top: -48.5vw;
+	margin-left: -4.0vw;
+
+	background-image: url(../img/logo.png);
+    background-repeat: no-repeat;
+    background-size: 100;
+
+	background-size: cover;
+
+	opacity: 0.3;
+}
+
+#header_character_stats_titles_background {
+	position: absolute;
+
+	background-color: rgba(1, 1, 5, 0.835);
+	box-shadow: 0px 1px 10px rgba(143, 143, 143, 0.253);
+	width: 60vw;
+    height: 2vw;
+
+	margin-top: -47.1vw;
+	margin-left: 18.7vw;
+
+    overflow: hidden;
+}
+
+.header_character_stats_option {
+	position: absolute;
+	background-color: rgb(7, 7, 7);
+	color:rgb(67, 100, 190);
+
+	border: 2px rgba(143, 143, 143, 0.171) solid;
+	border-radius: 5%;
+	overflow: hidden;
+
+	font-size: 0.9vw;
+	text-align: center;
+
+	margin-top: -15.7vw;
+
+	width: 10vw;
+	height: fit-content;
+  
+}
+
+#header_character_stats_name_title {
+	position: absolute;
+
+	margin-top: -46.3vw;
+	margin-left: 28.7vw;
+}
+
+#header_character_stats_zombiekills_title {
+	position: absolute;
+
+	margin-top: -46.3vw;
+	margin-left: 43.7vw;
+}
+
+#header_character_stats_deaths_title {
+	position: absolute;
+
+	margin-top: -46.3vw;
+	margin-left: 58.7vw;
+}
+
+#centerinfo{
+
+	margin-top: 70%;
+	margin-left: 1%;
+    
+}
+
+#centerinfo div{
+    text-align: center;
+
+}
+
+
+#userslist{
+  width: 60vw;
+  height: 48vw;
+
+  float: left;
+
+  margin-left: 18vw;
+  margin-top: -45vw;
+
+  overflow-y: scroll;
+  border-radius: 1px;
+
+  background-color: rgba(1, 1, 5, 0.527);
+  box-shadow: 0px 1px 10px rgba(143, 143, 143, 0.253);
+} 
+
+#userslist_main{
+  color: white;
+
+  width: 89%;
+  height: 2.8%;
+  
+  flex: 0 0 auto;
+  
+  max-height: 100%;
+  
+  margin: 1.8%;
+  margin-left: 3.0vw;
+  
+  /* background-size: 100%; */
+
+  background: rgba(17, 17, 17, 0.527);
+
+  border: 1px solid rgba(129, 129, 129, 0.253);
+  box-shadow: 0px 4px 10px rgba(129, 129, 129, 0.253);
+}
+
+
+#userlist_rank_display {
+  position: absolute;
+  width: 12vw;
+  margin-left: -37.2vw;
+  
+  text-align: right;
+}
+
+
+#userlist_username_display{
+	position: absolute;
+	width: 12vw;
+	margin-left: -20.5vw;
+}
+
+#userlist_zombiekills_display{
+	position: absolute;
+	width: 12vw;
+	margin-left: -5.5vw;
+}
+
+#userlist_deaths_display{
+	position: absolute;
+	width: 12vw;
+	margin-left: 9.6vw;
+}
+
+
+.userlist_displays {
+
+	color: rgba(228, 228, 228, 0.712);
+	text-align: center;
+
+	font-size: 0.80vw;
+}
+
+
+#personal_statistics_background {
+	position: absolute;
+
+	background-color: rgba(1, 1, 5, 0.527);
+	box-shadow: 0px 4px 10px rgba(143, 143, 143, 0.253);
+	width: 25vw;
+    height: 33vw;
+	margin-top: -35vw;
+	margin-left: -10.5vw;
+
+    overflow: hidden;
+}
+
+#zombie_kills_logo {
+	position: absolute;
+	width: 12.0%;
+	height: 20%;
+
+	margin-top: -35.5vw;
+	margin-left: -4.0vw;
+
+	background-image: url(../img/zombie_kills_logo_1.png);
+    background-repeat: no-repeat;
+    background-size: 100;
+
+	background-size: cover;
+
+	opacity: 0.7;
+}
+
+#deaths_logo {
+	position: absolute;
+	width: 12.0%;
+	height: 20%;
+
+	margin-top: -22.5vw;
+	margin-left: -4.0vw;
+
+	background-image: url(../img/deaths_logo.png);
+    background-repeat: no-repeat;
+    background-size: 100;
+
+	background-size: cover;
+
+	opacity: 0.7;
+}
+
+
+#header_character_personal_zombiekills_title {
+
+	position: absolute;
+	color:rgba(200, 200, 200, 0.616);
+
+	font-size: 2vw;
+	font-weight: 900;
+	text-align: center;
+
+    width: 25vw;
+    height: fit-content;
+
+	margin-top: -24.3vw;
+	margin-left: -10.5vw;
+
+	background-color: rgba(77, 77, 77, 0.246);
+    text-shadow: 0 0 5px rgb(177, 177, 177);
+	
+}
+
+#header_character_personal_deaths_title {
+
+	position: absolute;
+	color:rgba(200, 200, 200, 0.616);
+
+	font-size: 2vw;
+	font-weight: 900;
+	text-align: center;
+
+    width: 25vw;
+    height: fit-content;
+
+	margin-top: -11.3vw;
+	margin-left: -10.5vw;
+
+	background-color: rgba(77, 77, 77, 0.246);
+    text-shadow: 0 0 5px rgb(177, 177, 177);
+}
+
+
+#header_character_personal_rank_title {
+	position: absolute;
+
+	color: rgb(155, 155, 155);
+
+
+	font-size: 0.9vw;
+
+	text-align: left;
+
+    width: 24.0vw;
+    height: fit-content;
+
+    margin-top: -4.0vw;
+    margin-left: -10vw;
+
+	border-radius: 1px;
+
+	background-color: rgba(77, 77, 77, 0.527);
+	box-shadow: 0px 1px 10px rgba(143, 143, 143, 0.253);
+}
+
+#close_personal_statistics {
+	position: absolute;
+
+	font-size: 0.9vw;
+
+	color: rgba(255, 255, 255, 0.719);
+	text-align: center;
+    padding: 0.1vw;
+
+    width: 24.5vw;
+    height: 1.5vw;
+
+    margin-top: -0.5vw;
+    margin-left: -10.25vw;
+
+	background-color: #5f1f1fb9;
+
+	border-style: none;
+	box-sizing: border-box;
+}
+
+#close_personal_statistics:hover{
+	cursor: pointer;
+	background-color: #5f1f1f;
+	box-shadow: 0px 0px 15px rgb(61, 61, 61);
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  border-radius: 5px;
+  scroll-behavior: smooth;
+
+}
+/* Track */
+::-webkit-scrollbar-track {
+  border: 0.0px solid grey;
+  border-radius: 5px;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(49, 49, 49, 0.8);
+  border-radius: 5px;
+}
+
+input[type=text] {
+	font-family: "Prototype", serif;
+	font-size: 15px;
+	width: 25%;
+	color: rgba(255, 255, 255, 0.719);
+	height: 40px;
+	text-align: center;
+	background-color: rgb(27, 27, 27, 0.719);
+	border-color: rgb(58, 58, 58, 0.719);
+	margin-left: 5%;
+	margin-right: 5%;
+}
