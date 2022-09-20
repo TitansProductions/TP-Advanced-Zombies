@@ -34,7 +34,7 @@ function getIdentifier(_source)
         local xPlayer    = QBCore.Functions.GetPlayer(_source)
 
 		if xPlayer then
-			return xPlayer.PlayerData.license
+			return xPlayer.PlayerData.citizenid
 		end
 	end
 
