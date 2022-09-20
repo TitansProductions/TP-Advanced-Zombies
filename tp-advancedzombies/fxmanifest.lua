@@ -2,8 +2,8 @@ fx_version 'adamant'
 game 'gta5'
 
 author 'Nosmakos'
-description 'Titans Productions Advanced Zombies System (Supporting ESX, QBCore & Standalone)'
-version '1.6.4'
+description 'Titans Productions Advanced Zombies System (Supporting ESX & QBCore)'
+version '1.7.0'
 
 ui_page 'html/index.html'
 
@@ -23,7 +23,15 @@ client_scripts {
 
 files {
     'html/index.html',
-    'html/js/script.js',
+
+    'html/css/*.css',
+
+    'html/js/locales/*.js',
+    'html/js/*.js',
+
+    'html/img/*.jpg',
+    'html/img/*.png',
+
     'html/sounds/*.ogg',
     'html/sounds/*.mp3'
 }
