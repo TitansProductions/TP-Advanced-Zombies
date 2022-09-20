@@ -56,6 +56,7 @@ function updatePlayerStatistics(type, count)
     end
 end
 
+
 -----------------------------------------------------
 -- User Statistic & UI Functions.
 -----------------------------------------------------
@@ -148,13 +149,14 @@ end)
 -----------------------------------------------------
 -- User Statistic & UI Commands & Key Mapping.
 -----------------------------------------------------
-
-RegisterCommand(Config.UserStatistics.OpenCommand, function()
+if Config.UserStatisticsRanking then
+    RegisterCommand(Config.UserStatistics.OpenCommand, function()
     
-    if not isPlayerDead() then 
-        openUserStatisticsRankingUI() 
-    end
-
-end, false)
-
-RegisterKeyMapping(Config.UserStatistics.OpenCommand, 'Open User Statistics (Zombies Ranking UI)', 'keyboard', Config.UserStatistics.OpenKey)
+        if not isPlayerDead() then 
+            openUserStatisticsRankingUI() 
+        end
+    
+    end, false)
+    
+    RegisterKeyMapping(Config.UserStatistics.OpenCommand, 'Open User Statistics (Zombies Ranking UI)', 'keyboard', Config.UserStatistics.OpenKey)
+end
