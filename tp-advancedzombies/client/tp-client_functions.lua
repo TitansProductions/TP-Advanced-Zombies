@@ -1,3 +1,21 @@
+
+function isPedInAVehicle()
+	local ped = PlayerPedId()
+	vehicle = GetVehiclePedIsIn(ped, false)
+	if IsPedInAnyVehicle(ped, false) then
+		-- We dont need to check if ped is in driver seat
+		--if GetPedInVehicleSeat(vehicle, -1) == ped then 
+			local class = GetVehicleClass(vehicle)
+
+			-- We don't want planes, helicopters and trains
+			if class ~= 15 and class ~= 16 and class ~=21 then
+				return true
+			end
+		--end
+	end
+	return false
+end
+
 function round(number, decimals)
     local power = 10^decimals
     return math.floor(number * power) / power

@@ -15,6 +15,8 @@ TriggerServerEvent("tp-advancedzombies:onZombieSpawningStart")
 
 AddEventHandler('esx:onPlayerDeath', function(data)
     isDead = true
+
+    closeAdvancedZombiesUI()
 end)
 
 AddEventHandler('playerSpawned', function()
@@ -55,6 +57,10 @@ if Config.Framework == "QBCore" or Config.Framework == "Standalone" then
         end
 
     end)
+end
+
+function isPlayerDead()
+    return isDead
 end
 
 
@@ -179,6 +185,44 @@ if Config.Zombies.PlayCustomSpeakingSounds then
 
 end
 
+-- Vehicles Damage System
+if Config.Zombies.VehicleDamageSystem then
+    Citizen.CreateThread(function()
+        while true do
+            Citizen.Wait(1000)
+
+            if isPedInAVehicle() then
+
+                local ped = PlayerPedId()
+
+                for i, v in pairs(entitys) do
+
+                    local distance = GetDistanceBetweenCoords(GetEntityCoords(ped), GetEntityCoords(v.entity), true)
+        
+                    -- Causing vehicle damage when close to the player.
+                    if distance <= 2.5 then
+
+                        local vehicle = GetVehiclePedIsIn(ped, false)
+                        local vehicleClass = GetVehicleClass(vehicle)
+                        local healthEngineCurrent = GetVehicleEngineHealth(vehicle)
+
+                        print(healthEngineCurrent)
+
+                        local newHealthEngine = healthEngineCurrent - Config.Zombies.VehicleData[vehicleClass]
+                        SetVehicleEngineHealth(vehicle, newHealthEngine)
+
+                        print(newHealthEngine)
+                    end
+        
+                end
+
+            else
+                Citizen.Wait(2000)
+            end
+        end
+    end)
+end
+
 if Config.Zombies.HumanEatingAndAttackingAnimation then
     local animationSleepTime = 2000
 
@@ -196,27 +240,41 @@ if Config.Zombies.HumanEatingAndAttackingAnimation then
 
             local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(v.entity), true)
 
-            -- Playing zombies animation when a player is dead.
-            if distance <= 1.2 and isDead then
-                animsAction(v.entity, {lib = "amb@world_human_gardener_plant@female@idle_a", anim = "idle_a_female"}) 
-            end
+            if not isPedInAVehicle() then
 
-            -- Playing zombies & players animation on attack.
-            if distance <= 1.2 and not isDead then
+                -- Playing zombies animation when a player is dead.
+                if distance <= 1.2 and isDead then
+                    animsAction(v.entity, {lib = "amb@world_human_gardener_plant@female@idle_a", anim = "idle_a_female"}) 
+                end
+    
+                -- Playing zombies & players animation on attack.
+                if distance <= 1.2 and not isDead then
 
-                RequestAnimDict("misscarsteal4@actor")
-                TaskPlayAnim(v.entity,"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
+                    RequestAnimDict("misscarsteal4@actor")
+                    TaskPlayAnim(v.entity,"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
+    
+                    RequestAnimDict("misscarsteal4@actor")
+                    TaskPlayAnim(PlayerPedId(),"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
+    
+                    TaskGoToEntity(v.entity, PlayerPedId(), -1, 0.0, 500.0, 1073741824, 0)
+                end
 
-                RequestAnimDict("misscarsteal4@actor")
-                TaskPlayAnim(PlayerPedId(),"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
+            else
+                if distance <= 2.2 and not isDead then
 
-                TaskGoToEntity(v.entity, PlayerPedId(), -1, 0.0, 500.0, 1073741824, 0)
-            end
+                    RequestAnimDict("misscarsteal4@actor")
+                    TaskPlayAnim(v.entity,"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
+    
+                    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
+                    TaskGoToEntity(v.entity, PlayerPedId(), -1, 0.0, 500.0, 1073741824, 0)
+                end
+            end   
             
         end
     end
 
 end
+
 
 -- On Zombie Peds Looting
 if Config.Zombies.DropLoot and Config.Framework ~= "Standalone" then
@@ -357,6 +415,8 @@ StartCheckingZombiePedKills = function()
 
                 TriggerEvent("tp-advancedzombies:onPlayerZombieKill")
 
+                updatePlayerStatistics("zombie_kills", 1)
+
                 if Config.Zombies.DropLoot and Config.Framework ~= "Standalone" then
                     local randomChance = math.random(0, 100)
                                 
@@ -430,15 +490,16 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 			for i, v in pairs(entitys) do
 				pedX, pedY, pedZ = table.unpack(GetEntityCoords(v.entity, true))
 
-                                --Citizen.Trace("Zombie Eliminated from refuge\n")
-                                SetEntityHealth(v.entity, 0)
+                --Citizen.Trace("Zombie Eliminated from refuge\n")
+                SetEntityHealth(v.entity, 0)
 
-                                SetEntityAsNoLongerNeeded(v.entity)
+                SetEntityAsNoLongerNeeded(v.entity)
 				SetModelAsNoLongerNeeded(GetEntityModel(v.entity))
 
 				DeleteEntity(v.entity)
 				table.remove(entitys,i)
 			end
+
 		end
 
 		if loadedPlayerData and not playerIsInSafezone then
@@ -457,8 +518,8 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
             Wait(500)
 
             if canSpawnZombies then
-					
-		local TimeOfDay = GetClockHours()
+
+                local TimeOfDay = GetClockHours()
 
                 if TimeOfDay >= 18 and TimeOfDay <= 6 then
                     spawnZombies = Config.Zombies.SpawnZombieAtNight
@@ -526,7 +587,7 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
                     until canSpawn
     
                     local entity = CreatePed(4, GetHashKey(EntityModel), posX, posY, posZ, 0.0, false, false)
-                    local entityMaxHealth = Config.ZombiePedModelsData[string.lower(EntityModel)].data.health
+                    local entityMaxHealth = Config.ZombiePedModelsData[EntityModel].data.health
     
                     SetEntityHealth(entity, entityMaxHealth)
     
@@ -537,7 +598,7 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
                         Citizen.Wait(1)
                     end
         
-        
+
                     --TaskGoToEntity(entity, GetPlayerPed(-1), -1, 0.0, 1.0, 1073741824, 0)
                     SetPedMovementClipset(entity, walk, 1.5)
                     TaskWanderStandard(entity, 10.0, 10)
@@ -621,7 +682,7 @@ Citizen.CreateThread(function()
         Wait(0)
 
         for i, v in pairs(entitys) do
-            SetPedSuffersCriticalHits(v.entity, Config.ZombiePedModelsData[string.lower(v.name)].data.headshot_instakill)
+            SetPedSuffersCriticalHits(v.entity, Config.ZombiePedModelsData[v.name].data.headshot_instakill)
         end
     end
 
@@ -646,7 +707,7 @@ Citizen.CreateThread(function()
 
 							local playerPed = PlayerPedId()
 
-                            local entityName = string.lower(v.name)
+                            local entityName = v.name
 
                             local withoutArmorDamage     = Config.ZombiePedModelsData[entityName].data.damage_without_armor
                             local armorDamage            = Config.ZombiePedModelsData[entityName].data.damage_with_armor
