@@ -2,6 +2,10 @@ ESX, QBCore = nil, nil
 
 local loadedPlayerData = false
 
+local hasUserStatisticsRankingUIOpen = false
+
+local userStatistics = {}
+
 Citizen.CreateThread(function()
 
     if Config.Framework == "ESX" then
@@ -21,9 +25,6 @@ Citizen.CreateThread(function()
 
 end)
 
-local hasUserStatisticsRankingUIOpen = false
-
-local userStatistics = {}
 
 if Config.UserStatisticsRanking then
     TriggerServerEvent('tp-advancedzombies:onPlayerStatisticsLoad')
@@ -37,17 +38,6 @@ end)
 RegisterNetEvent("tp-advancedzombies:loadedPlayerData")
 AddEventHandler("tp-advancedzombies:loadedPlayerData", function(cb)
     loadedPlayerData = cb
-end)
-
-
--- This event should be called in your esx_ambulancejob or qb ambulancejob when a player is completely dead.
-RegisterNetEvent("tp-advancedzombies:updatePlayerDeathStatistics")
-AddEventHandler("tp-advancedzombies:updatePlayerDeathStatistics", function()
-
-    if Config.UserStatisticsRanking then
-        TriggerServerEvent("tp-advancedzombies:updatePlayerStatistics", "deaths", 1)
-    end
-
 end)
 
 -- Supporting QBCore Hospital in order to update player deaths.
