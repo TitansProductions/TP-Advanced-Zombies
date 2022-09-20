@@ -7,6 +7,14 @@ Config.Framework          = "ESX"
 -- When set to true, all the default fivem vehicles and peds (npcs) will not be spawned.
 Config.DisableTrafficAdjuster    = true
 
+-- If you set it to true, make sure tp_user_statistics sql file exists in your database.
+Config.UserStatisticsRanking = true
+
+Config.UserStatistics = {
+    OpenCommand = "ranking",
+    OpenKey = "F7",
+}
+
 ------------------------------------------------------------------------------------------------------------------
 -- Developers Mode.
 ------------------------------------------------------------------------------------------------------------------
