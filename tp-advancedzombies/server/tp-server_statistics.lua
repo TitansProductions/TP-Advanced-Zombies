@@ -100,26 +100,30 @@ end)
 
 RegisterServerEvent('tp-advancedzombies:updatePlayerStatistics')
 AddEventHandler('tp-advancedzombies:updatePlayerStatistics', function(type, count)
-    local _source = source
 
-    local identifier = getIdentifier(_source)
+    if Config.UserStatisticsRanking then
 
-    for k, v in pairs(userStatistics) do
-        if v.id == identifier then
+        local _source = source
 
-            if type == "zombie_kills" then
-                v.zombie_kills = v.zombie_kills + count
-
-            elseif type == "deaths" then
-                v.deaths = v.deaths + count
+        local identifier = getIdentifier(_source)
+    
+        for k, v in pairs(userStatistics) do
+            if v.id == identifier then
+    
+                if type == "zombie_kills" then
+                    v.zombie_kills = v.zombie_kills + count
+    
+                elseif type == "deaths" then
+                    v.deaths = v.deaths + count
+                end
+    
+                TriggerClientEvent("tp-advancedzombies:updatePlayerStatisticsOnClient", _source, v)
             end
-
-            TriggerClientEvent("tp-advancedzombies:updatePlayerStatisticsOnClient", _source, v)
         end
+        
     end
 
 end)
-
 
 function saveUserStatistics(_source)
     local _identifier = getIdentifier(_source)
