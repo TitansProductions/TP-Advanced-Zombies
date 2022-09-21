@@ -185,44 +185,6 @@ if Config.Zombies.PlayCustomSpeakingSounds then
 
 end
 
--- Vehicles Damage System
-if Config.Zombies.VehicleDamageSystem then
-    Citizen.CreateThread(function()
-        while true do
-            Citizen.Wait(1000)
-
-            if isPedInAVehicle() then
-
-                local ped = PlayerPedId()
-
-                for i, v in pairs(entitys) do
-
-                    local distance = GetDistanceBetweenCoords(GetEntityCoords(ped), GetEntityCoords(v.entity), true)
-        
-                    -- Causing vehicle damage when close to the player.
-                    if distance <= 2.5 then
-
-                        local vehicle = GetVehiclePedIsIn(ped, false)
-                        local vehicleClass = GetVehicleClass(vehicle)
-                        local healthEngineCurrent = GetVehicleEngineHealth(vehicle)
-
-                        print(healthEngineCurrent)
-
-                        local newHealthEngine = healthEngineCurrent - Config.Zombies.VehicleData[vehicleClass]
-                        SetVehicleEngineHealth(vehicle, newHealthEngine)
-
-                        print(newHealthEngine)
-                    end
-        
-                end
-
-            else
-                Citizen.Wait(2000)
-            end
-        end
-    end)
-end
-
 if Config.Zombies.HumanEatingAndAttackingAnimation then
     local animationSleepTime = 2000
 
