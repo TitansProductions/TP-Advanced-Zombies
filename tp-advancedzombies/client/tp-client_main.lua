@@ -521,7 +521,7 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 
                 local TimeOfDay = GetClockHours()
 
-                if TimeOfDay >= 18 and TimeOfDay <= 6 then
+                if TimeOfDay >= 18 or TimeOfDay <= 6 then
                     spawnZombies = Config.Zombies.SpawnZombieAtNight
                 else
                     spawnZombies = Config.Zombies.SpawnZombieAtDaylight
