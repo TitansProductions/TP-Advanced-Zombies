@@ -163,7 +163,6 @@ if Config.Zombies.PlayCustomSpeakingSounds then
             sounds = Config.Zombies.SpeakingSounds.DistanceSounds.close
         end
 
-        Wait(500)
         volume = round(1-number, 2)
 
         if volume >= Config.Zombies.SpeakingSounds.Volume then
