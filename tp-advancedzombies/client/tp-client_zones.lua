@@ -1,33 +1,9 @@
 local currentZoneType = "UNKNOWN"
 
-AddEventHandler('tp-advancedzombies:hasEnteredZone', function(zone, type, blockPlayerAggressiveActions, blockZombiePedSpawning)
-	currentZoneType = type
-
-    if blockPlayerAggressiveActions then
-        BlockPlayerAggressiveActions()
-    end
-
-    if Config.Debug then
-        print("Entered " .. currentZoneType)
-    end
-end)
-
-AddEventHandler('tp-advancedzombies:hasExitedZone', function(zone)
-	currentZoneType = "UNKNOWN"
-    
-    if Config.Debug then
-        print("Not inside any zone, current zone type is unknown.")
-    end
-end)
-
-function getPlayerZoneType()
-    return currentZoneType
-end
-
 -- Enter / Exit marker events
 Citizen.CreateThread(function()
 	while true do
-		Citizen.Wait(1250)
+		Citizen.Wait(Config.EnteringZoneDelay)
 
 		local coords    = GetEntityCoords(PlayerPedId())
 		local isInZone  = false
@@ -88,6 +64,30 @@ Citizen.CreateThread(function()
         end
     end
 end)
+
+AddEventHandler('tp-advancedzombies:hasEnteredZone', function(zone, type, blockPlayerAggressiveActions, blockZombiePedSpawning)
+	currentZoneType = type
+
+    if blockPlayerAggressiveActions then
+        BlockPlayerAggressiveActions()
+    end
+
+    if Config.Debug then
+        print("Entered " .. currentZoneType)
+    end
+end)
+
+AddEventHandler('tp-advancedzombies:hasExitedZone', function(zone)
+	currentZoneType = "UNKNOWN"
+    
+    if Config.Debug then
+        print("Not inside any zone, current zone type is unknown.")
+    end
+end)
+
+function getPlayerZoneType()
+    return currentZoneType
+end
 
 function BlockPlayerAggressiveActions()
 
