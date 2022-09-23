@@ -663,7 +663,6 @@ Citizen.CreateThread(function()
                             local isPlayerInvincible = GetPlayerInvincible(PlayerId())
 
                             if not isPlayerInvincible and isPlayerInvincible ~= 1 and isPlayerInvincible ~= "1" then
-                                print("not invinsible")
                                 local entityName = string.lower(v.name)
 
                                 local withoutArmorDamage     = Config.ZombiePedModelsData[entityName].data.damage_without_armor
