@@ -132,7 +132,7 @@ if Config.Zombies.PlayCustomSpeakingSounds then
                 local entityCoords = GetEntityCoords(v.entity)
     
                 -- Playing zombie sounds when close to the player.
-                if distance <= 30.1 then
+                if distance <= 30.1 and GetEntityCoords(v.entity) ~= nil then
                     
                     local randomChance = math.random(1, 99)
     
@@ -144,10 +144,10 @@ if Config.Zombies.PlayCustomSpeakingSounds then
                     
                         local number, sounds = 0, {}
                 
-                        if (distIs >= 10.1 and distIs <= 30.01) then
+                        if (distIs > 10.0 and distIs <= 30.01) then
                             number = distIs / 30.0
                             sounds = Config.Zombies.SpeakingSounds.DistanceSounds.far
-                
+
                         elseif (distIs <= 10.0) then
                             number = distIs / 10.0 
                             sounds = Config.Zombies.SpeakingSounds.DistanceSounds.close
@@ -156,11 +156,12 @@ if Config.Zombies.PlayCustomSpeakingSounds then
                         local volume = round(1-number, 2)
                 
                         if sounds ~= nil and next(sounds) ~= nil then
-                
+                            local _sound = sounds[ math.random( #sounds ) ]
+
                             SendNUIMessage({ 
                                 action = "playSound",
                 
-                                sound = sounds[ math.random( #sounds ) ], 
+                                sound = _sound, 
                                 soundVolume = volume
                             })
                 
