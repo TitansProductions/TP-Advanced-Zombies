@@ -121,67 +121,59 @@ if Config.Zombies.AttackPlayersBasedInDistance then
 end
 
 if Config.Zombies.PlayCustomSpeakingSounds then
+
     Citizen.CreateThread(function()
         while true do
             Citizen.Wait(3000)
 
-            StartPlayingZombieSpeakingSounds()
-        end
-    end)
+            for i, v in pairs(entitys) do
 
-    StartPlayingZombieSpeakingSounds = function()
-
-        for i, v in pairs(entitys) do
-
-            local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(v.entity), true)
-
-            -- Playing zombie sounds when close to the player.
-            if distance <= 30.1 then
-                TriggerServerEvent('tp-advancedzombies:SyncSpeakingSoundsOnServer', GetEntityCoords(v.entity))
-            end
-
-        end
-    end
-
-    RegisterNetEvent('tp-advancedzombies:SyncSpeakingSoundsOnClient')
-    AddEventHandler('tp-advancedzombies:SyncSpeakingSoundsOnClient', function(entityCoords)
-
-        local lCoords = entityCoords
-        local eCoords = GetEntityCoords(PlayerPedId())
-        local distIs  = Vdist(lCoords.x, lCoords.y, lCoords.z, eCoords.x, eCoords.y, eCoords.z)
+                local distance = GetDistanceBetweenCoords(GetEntityCoords(PlayerPedId()), GetEntityCoords(v.entity), true)
+                local entityCoords = GetEntityCoords(v.entity)
     
-        local number = distIs / 0.0
-        local volume = Config.Zombies.SpeakingSounds.Volume 
-        local sounds = {}
-
-        if (distIs >= 10.1 and distIs <= 30.01) then
-            number = distIs / 30.0
-            sounds = Config.Zombies.SpeakingSounds.DistanceSounds.far
-
-        elseif (distIs <= 10.0) then
-            number = distIs / 10.0 
-            sounds = Config.Zombies.SpeakingSounds.DistanceSounds.close
+                -- Playing zombie sounds when close to the player.
+                if distance <= 30.1 then
+                    
+                    local randomChance = math.random(1, 99)
+    
+                    --Creating a 50% chance of a zombie to do a sound in order to prevent all zombies doing sounds at the same time.
+                    if math.random(1, 99) >= 50 then
+                        local lCoords = entityCoords
+                        local eCoords = GetEntityCoords(PlayerPedId())
+                        local distIs  = Vdist(lCoords.x, lCoords.y, lCoords.z, eCoords.x, eCoords.y, eCoords.z)
+                    
+                        local number, sounds = 0, {}
+                
+                        if (distIs >= 10.1 and distIs <= 30.01) then
+                            number = distIs / 30.0
+                            sounds = Config.Zombies.SpeakingSounds.DistanceSounds.far
+                
+                        elseif (distIs <= 10.0) then
+                            number = distIs / 10.0 
+                            sounds = Config.Zombies.SpeakingSounds.DistanceSounds.close
+                        end
+                
+                        local volume = round(1-number, 2)
+                
+                        if sounds ~= nil and next(sounds) ~= nil then
+                
+                            SendNUIMessage({ 
+                                action = "playSound",
+                
+                                sound = sounds[ math.random( #sounds ) ], 
+                                soundVolume = volume
+                            })
+                
+                        end
+                    end
+    
+                    --TriggerServerEvent('tp-advancedzombies:SyncSpeakingSoundsOnServer', GetEntityCoords(v.entity))
+                end
+    
+            end
         end
-
-        volume = round(1-number, 2)
-
-        if volume >= Config.Zombies.SpeakingSounds.Volume then
-            volume = Config.Zombies.SpeakingSounds.Volume 
-        end
-
-        if sounds ~= nil and next(sounds) ~= nil then
-
-            SendNUIMessage({ 
-                action = "playSound",
-
-                sound = sounds[ math.random( #sounds ) ], 
-                soundVolume = volume
-            })
-
-        end
-        
     end)
-
+    
 end
 
 if Config.Zombies.HumanEatingAndAttackingAnimation then
@@ -482,7 +474,7 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 
                 local TimeOfDay = GetClockHours()
 
-                if TimeOfDay >= 18 or TimeOfDay <= 6 then
+                if TimeOfDay >= 18 and TimeOfDay <= 6 then
                     spawnZombies = Config.Zombies.SpawnZombieAtNight
                 else
                     spawnZombies = Config.Zombies.SpawnZombieAtDaylight
@@ -668,31 +660,28 @@ Citizen.CreateThread(function()
 							TaskPlayAnim(v.entity,"misscarsteal4@actor","stumble",1.0, 1.0, 500, 9, 1.0, 0, 0, 0)
 
 							local playerPed = PlayerPedId()
+                            local isPlayerInvincible = GetPlayerInvincible(PlayerId())
 
-                            local entityName = string.lower(v.name)
+                            if not isPlayerInvincible and isPlayerInvincible ~= 1 and isPlayerInvincible ~= "1" then
+                                print("not invinsible")
+                                local entityName = string.lower(v.name)
 
-                            local withoutArmorDamage     = Config.ZombiePedModelsData[entityName].data.damage_without_armor
-                            local armorDamage            = Config.ZombiePedModelsData[entityName].data.damage_with_armor
-
-                            local armor = GetPedArmour(playerPed)
-
-                            if armor > 0 then
-
-                                if armorDamage == nil or armorDamage == 0 then
-                                    armorDamage = 10
-                                end
-
-                                SetPedArmour(playerPed, armor - armorDamage)
+                                local withoutArmorDamage     = Config.ZombiePedModelsData[entityName].data.damage_without_armor
+                                local armorDamage            = Config.ZombiePedModelsData[entityName].data.damage_with_armor
     
-                            else
-                                local health = GetEntityHealth(playerPed)
-
-                                if withoutArmorDamage == nil or withoutArmorDamage == 0 then
-                                    withoutArmorDamage = 15
+                                local armor = GetPedArmour(playerPed)
+    
+                                if armor > 0 then
+    
+                                    if armorDamage == nil or armorDamage == 0 then
+                                        armorDamage = 10
+                                    end
+    
+                                    SetPedArmour(playerPed, armor - armorDamage)
+        
+                                else
+                                    ApplyDamageToPed(playerPed, withoutArmorDamage, false)
                                 end
-
-                                SetEntityHealth(playerPed, health - withoutArmorDamage)
-
                             end
 
                 
