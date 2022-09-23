@@ -124,7 +124,6 @@ Config.Zombies = {
     PlayCustomSpeakingSounds = true,
 
     SpeakingSounds = {
-        Volume = 0.3,
 
         DistanceSounds = {
 
