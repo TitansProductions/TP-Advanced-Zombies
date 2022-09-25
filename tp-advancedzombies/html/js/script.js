@@ -93,7 +93,7 @@ $(function() {
 
       }
 
-      if (playersCount <= 20 && prod_player.zombie_kills > 0){
+      if (playersCount <= 15 && prod_player.zombie_kills > 0){
         $("#userslist").append(
           `<div id="userslist_main">`+
           `<div>`+
