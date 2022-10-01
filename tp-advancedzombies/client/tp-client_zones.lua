@@ -91,7 +91,7 @@ end
 
 function BlockPlayerAggressiveActions()
 
-    local player = PlayerPedId()
+    local player = PlayerId()
 
     SetPlayerCanDoDriveBy(player, false)
     DisablePlayerFiring(player, true)
