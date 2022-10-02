@@ -91,11 +91,11 @@ end
 
 function BlockPlayerAggressiveActions()
 
-    local player = PlayerId()
+    local playerPedId = PlayerPedId()
 
-    SetPlayerCanDoDriveBy(player, false)
-    DisablePlayerFiring(player, true)
-    SetPlayerInvincible(player, true)
+    SetPlayerCanDoDriveBy(playerPedId, false)
+    DisablePlayerFiring(playerPedId, true)
+    SetPlayerInvincible(playerPedId, true)
     DisableControlAction(0,24) -- INPUT_ATTACK
     DisableControlAction(0,69) -- INPUT_VEH_ATTACK
     DisableControlAction(0,70) -- INPUT_VEH_ATTACK2
