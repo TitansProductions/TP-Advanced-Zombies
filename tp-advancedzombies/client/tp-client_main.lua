@@ -63,6 +63,22 @@ function isPlayerDead()
     return isDead
 end
 
+if Config.Zombies.Networked
+    Citizen.CreateThread(function()
+        while true do
+            Wait(1000)
+            local playerCoords = GetEntityCoords(PlayerPedId())
+            ESX.TriggerServerCallback('tp-advancedzombies:getZombies', function(cb)
+                print(dump(entitys))
+                entitys = cb
+                print(dump(cb))
+            end, playerCoords)
+            if Config.Debug 
+                print("Entity Table Updated") 
+            end
+        end
+    end)
+end
 
 if Config.Zombies.AttackPlayersOnShooting then
 
@@ -366,7 +382,11 @@ StartCheckingZombiePedKills = function()
         pedX, pedY, pedZ = table.unpack(GetEntityCoords(v.entity, true))
 
         if not DoesEntityExist(v.entity) then
-            table.remove(entitys, i)
+            if Config.Zombies.Networked
+                TriggerServerEvent("tp-advancedzombies:removeZombie", v.entity)
+            else
+                table.remove(entitys, i)
+            end
         end
 
         if IsPedDeadOrDying(v.entity, 1) == 1 then
@@ -404,7 +424,11 @@ StartCheckingZombiePedKills = function()
                 local model = GetEntityModel(v.entity)
                 SetEntityAsNoLongerNeeded(v.entity)
                 SetModelAsNoLongerNeeded(model)
-                table.remove(entitys, i)
+                if Config.Zombies.Networked
+                    TriggerServerEvent("tp-advancedzombies:removeZombie", v.entity)
+                else
+                    table.remove(entitys, i)
+                end
 
                 Wait(2000)
             
@@ -458,7 +482,11 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 				SetModelAsNoLongerNeeded(GetEntityModel(v.entity))
 
 				DeleteEntity(v.entity)
-				table.remove(entitys,i)
+                if Config.Zombies.Networked
+                    TriggerServerEvent("tp-advancedzombies:removeZombie", v.entity)
+                else
+                    table.remove(entitys,i)
+                end
 			end
 
 		end
@@ -591,9 +619,11 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
                     --if not NetworkGetEntityIsNetworked(entity) then
                     --	NetworkRegisterEntityAsNetworked(entity)
                     --end
-        
-                    table.insert(entitys, {entity = entity, name = EntityModel})
-    
+                    if Config.Zombies.Networked
+                        TriggerServerEvent("tp-advancedzombies:addZombie", entity,s)
+                    else
+                        table.insert(entitys, {entity = entity, name = EntityModel})
+                    end
                     local playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
                     local distance = GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(-1)), GetEntityCoords(entity), true)
                         
@@ -611,7 +641,11 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 			for i, v in pairs(entitys) do
 				if not DoesEntityExist(v.entity) then
 					SetEntityAsNoLongerNeeded(v.entity)
-					table.remove(entitys, i)
+                    if Config.Zombies.Networked
+                        TriggerServerEvent("tp-advancedzombies:removeZombie", v.entity)
+                    else
+                        table.remove(entitys, i)
+                    end
 				else
 					local playerX, playerY, playerZ = table.unpack(GetEntityCoords(GetPlayerPed(-1), true))
 					local pedX, pedY, pedZ = table.unpack(GetEntityCoords(v.entity, true))	
@@ -621,7 +655,11 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 						SetEntityAsNoLongerNeeded(v.entity)
 						SetModelAsNoLongerNeeded(model)
 						--Citizen.Trace("Zombie Eliminated\n")
-						table.remove(entitys, i)
+                        if Config.Zombies.Networked
+                            TriggerServerEvent("tp-advancedzombies:removeZombie", v.entity)
+                        else
+                            table.remove(entitys, i)
+                        end
 					end
 				end
 					
@@ -630,7 +668,11 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
 					SetEntityAsNoLongerNeeded(v.entity)
 					SetModelAsNoLongerNeeded(model)
 					DeleteEntity(v.entity)
-					table.remove(entitys,i)
+                    if Config.Zombies.Networked
+                        TriggerServerEvent("tp-advancedzombies:removeZombie", v.entity)
+                    else
+                        table.remove(entitys,i)
+                    end
 					--Citizen.Trace("Zombie Eliminated from Water\n")
 				end
 			end
@@ -710,7 +752,11 @@ AddEventHandler('tp-advancedzombies:clearZombies', function()
     for i, v in pairs(entitys) do
 
         if not DoesEntityExist(v.entity) then
-            table.remove(entitys, i)
+            if Config.Zombies.Networked
+                TriggerServerEvent("tp-advancedzombies:removeZombie", v.entity)
+            else
+                table.remove(entitys, i)
+            end
         end
 
         local model = GetEntityModel(v.entity)

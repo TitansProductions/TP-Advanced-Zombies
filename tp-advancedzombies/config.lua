@@ -105,6 +105,7 @@ Config.Zombies = {
     -- If you set this to true, zombies will only spawn in zones where you allow.
     SpawnZombiesOnlyInZones = false,
 
+    Networked = false, -- Requires ESX for callbacks
     SpawnZombieAtDaylight = 5,
     SpawnZombieAtNight    = 10,
 	

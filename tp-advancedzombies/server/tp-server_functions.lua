@@ -1,6 +1,7 @@
 
 -- ESX & QBCore Support.
 ESX, QBCore      = nil, nil
+zombieEntites = {}
 
 if Config.Framework == "ESX" then
     TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
@@ -52,3 +53,34 @@ function getOnlinePlayers()
 	end
 	
 end
+
+function addEntityToTable(entity,EntityModel)
+    table.insert(zombieEntites, {entity = entity, name = EntityModel})
+end
+
+function getEntityTable()
+    return zombieEntites
+end
+
+function removeEntityFromTable(entity)
+    for i, v in ipairs (zombieEntites) do 
+        if (v.entity == entity) then
+        zombieEntites[i] = nil
+        end
+    end
+end
+
+RegisterServerEvent("tp-advancedzombies:addZombie")
+AddEventHandler("tp-advancedzombies:addZombie", function(entity, EntityModel)
+    addEntityToTable(entity,EntityModel)
+end)
+
+RegisterServerEvent("tp-advancedzombies:removeZombie")
+AddEventHandler("tp-advancedzombies:removeZombie", function(entity, EntityModel)
+    removeEntityFromTable(entity)
+end)
+
+ESX.RegisterServerCallback('tp-advancedzombies:getZombies', function(source, cb)
+    zombies = getEntityTable()
+    cb(zombies)
+end)
