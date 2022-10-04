@@ -63,7 +63,7 @@ function isPlayerDead()
     return isDead
 end
 
-if Config.Zombies.Networked
+if Config.Zombies.Networked then
     Citizen.CreateThread(function()
         while true do
             Wait(1000)
@@ -564,7 +564,7 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
     
                     until canSpawn
 
-                    if Config.Zombies.Networked
+                    if Config.Zombies.Networked then
                         local entity = CreatePed(4, GetHashKey(EntityModel), posX, posY, posZ, 0.0, true, false)
                     else
                         local entity = CreatePed(4, GetHashKey(EntityModel), posX, posY, posZ, 0.0, false, false)
