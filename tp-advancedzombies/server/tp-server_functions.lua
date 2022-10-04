@@ -72,15 +72,40 @@ end
 
 RegisterServerEvent("tp-advancedzombies:addZombie")
 AddEventHandler("tp-advancedzombies:addZombie", function(entity, EntityModel)
+	if Config.Debug then
+		print("entity added | server table")
+	end
     addEntityToTable(entity,EntityModel)
 end)
 
 RegisterServerEvent("tp-advancedzombies:removeZombie")
 AddEventHandler("tp-advancedzombies:removeZombie", function(entity, EntityModel)
+	if Config.Debug then
+		print("entity removed | server table")
+	end
     removeEntityFromTable(entity)
 end)
 
 ESX.RegisterServerCallback('tp-advancedzombies:getZombies', function(source, cb)
+	if Config.Debug then
+		print("callback initiated")
+	end
     zombies = getEntityTable()
+	if Config.Debug then
+		print(dump(zombies))
+	end
     cb(zombies)
 end)
+
+function dump(o)
+    if type(o) == 'table' then
+       local s = '{ '
+       for k,v in pairs(o) do
+          if type(k) ~= 'number' then k = '"'..k..'"' end
+          s = s .. '['..k..'] = ' .. dump(v) .. ','
+       end
+       return s .. '} '
+    else
+       return tostring(o)
+    end
+ end

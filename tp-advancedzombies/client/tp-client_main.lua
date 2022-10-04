@@ -69,11 +69,15 @@ if Config.Zombies.Networked then
             Wait(1000)
             local playerCoords = GetEntityCoords(PlayerPedId())
             ESX.TriggerServerCallback('tp-advancedzombies:getZombies', function(cb)
-                if Config.Debug print(dump(entitys))
+                if Config.Debug then 
+                    print(dump(entitys)) 
+                end
                 entitys = cb
-                if Config.Debug print(dump(cb))
+                if Config.Debug then 
+                    print(dump(cb)) 
+                end
             end, playerCoords)
-            if Config.Debug 
+            if Config.Debug then
                 print("Entity Table Updated") 
             end
         end
@@ -560,14 +564,14 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
                             break
                         else
                             canSpawn = true
-                        end`
+                        end
     
                     until canSpawn
 
                     if Config.Zombies.Networked then
-                        local entity = CreatePed(4, GetHashKey(EntityModel), posX, posY, posZ, 0.0, true, false)
+                        entity = CreatePed(4, GetHashKey(EntityModel), posX, posY, posZ, 0.0, true, false)
                     else
-                        local entity = CreatePed(4, GetHashKey(EntityModel), posX, posY, posZ, 0.0, false, false)
+                        entity = CreatePed(4, GetHashKey(EntityModel), posX, posY, posZ, 0.0, false, false)
                     end
 
                     local entityMaxHealth = Config.ZombiePedModelsData[string.lower(EntityModel)].data.health
@@ -750,8 +754,15 @@ end)
 
 
 function addZombie(entity,EntityModel)
+    if Config.Debug then
+        print("add zombie called")
+        print(entity)
+    end
     if Config.Zombies.Networked then
-        TriggerServerEvent("tp-advancedzombies:removeZombie", entity)
+        TriggerServerEvent("tp-advancedzombies:addZombie", entity)
+        if Config.Debug then
+            print("added via client")
+        end
     else
         table.insert(entitys, {entity = entity, name = EntityModel})
     end
