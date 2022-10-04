@@ -173,7 +173,7 @@ if Config.Zombies.PlayCustomSpeakingSounds then
                 
                         if sounds ~= nil and next(sounds) ~= nil then
                             local _sound = sounds[ math.random( #sounds ) ]
-                            if Config.High3DSounds
+                            if Config.High3DSounds then
                                 exports["high_3dsounds"]:Play3DEntity(
                                     NetworkGetNetworkIdFromEntity(v.entity), -- entity net id
                                     50.0, -- distance
