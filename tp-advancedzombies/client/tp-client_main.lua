@@ -69,9 +69,9 @@ if Config.Zombies.Networked
             Wait(1000)
             local playerCoords = GetEntityCoords(PlayerPedId())
             ESX.TriggerServerCallback('tp-advancedzombies:getZombies', function(cb)
-                print(dump(entitys))
+                if Config.Debug print(dump(entitys))
                 entitys = cb
-                print(dump(cb))
+                if Config.Debug print(dump(cb))
             end, playerCoords)
             if Config.Debug 
                 print("Entity Table Updated") 
@@ -764,3 +764,16 @@ function removeZombie(entity,tableRow)
         table.remove(entitys, tableRow)
     end
 end
+
+function dump(o)
+    if type(o) == 'table' then
+       local s = '{ '
+       for k,v in pairs(o) do
+          if type(k) ~= 'number' then k = '"'..k..'"' end
+          s = s .. '['..k..'] = ' .. dump(v) .. ','
+       end
+       return s .. '} '
+    else
+       return tostring(o)
+    end
+ end
