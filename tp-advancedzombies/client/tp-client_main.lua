@@ -580,6 +580,8 @@ AddEventHandler("tp-advancedzombies:onZombieSync", function()
                     DisablePedPainAudio(entity, true)
                     StopPedSpeaking(entity,true)
                     SetEntityAsMissionEntity(entity, true, true)
+						
+		    TaskSetBlockingOfNonTemporaryEvents(entity, true) 
         
                     --if not NetworkGetEntityIsNetworked(entity) then
                     --	NetworkRegisterEntityAsNetworked(entity)
