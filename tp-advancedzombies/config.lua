@@ -93,6 +93,8 @@ Config.ZombiePedModelWalks = {
 	"move_lester_CaneUp",
 }
 
+Config.High3DSounds      = false     -- Enables intergration with High3DSounds and disables NUI Player
+                                    -- https://www.high-scripts.com/package/5035810
 Config.MuteAmbience      = true
 Config.NotHealthRecharge = true
 
@@ -103,6 +105,7 @@ Config.Zombies = {
     -- If you set this to true, zombies will only spawn in zones where you allow.
     SpawnZombiesOnlyInZones = false,
 
+    Networked = false, -- Requires ESX for callbacks
     SpawnZombieAtDaylight = 5,
     SpawnZombieAtNight    = 10,
 	
